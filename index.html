@@ -1122,7 +1122,7 @@ routes["/lab"]=()=>{
           <p style="margin-top:6px"><b style="color:var(--pale)">Evidence:</b> ${esc(l.ev)}</p>
           <p style="margin-top:6px"><b style="color:var(--pale)">Lesson:</b> ${esc(l.lesson)}</p>
           <p style="margin-top:6px"><b style="color:var(--pale)">Why not a flagship:</b> ${esc(l.why)}</p>
-          ${l.video?`<div class="medbox" data-vid="${esc(l.video)}" style="margin-top:10px"><span class="lbl">Concept visualization — AI-generated</span><video preload="metadata" muted playsinline src="${esc(l.video)}#t=0.5"></video><button class="play" aria-label="Play concept video"><i>▶</i></button></div>`:""}
+          ${l.video?`<div class="vidside" data-vid="${esc(l.video)}" style="margin-top:10px;aspect-ratio:16/9"><span class="lbl">Concept visualization — AI-generated</span><video data-av muted loop playsinline preload="metadata" src="${esc(l.video)}#t=0.5" aria-label="Concept visualization for ${esc(l.n)}"></video><button class="expand" aria-label="Toggle sound for ${esc(l.n)} video">🔇 Muted — tap for voice</button></div>`:""}
         </div>
       </div>`).join("")}
     </div>
@@ -1336,18 +1336,55 @@ function wirePage(r,arg){
     el.innerHTML=`<h4>${esc(sk)} ${pj?`· ${esc(pj.name)}`:"· Lab"}</h4>
     <div class="row"><b>Rating</b> — ${RATING_LABEL[pj?(pj.skills[sk]||"na"):"de"]}</div>
     ${gen?`<div class="row"><b>Evidence</b> — ${esc(gen)}</div>`:pj?`<div class="row"><b>Evidence</b> — ${esc(pj.verified[0])}</div><div class="row"><b>Limitation</b> — ${esc(pj.limitations[0])}</div>`:""}`}));
-  // video modals (legacy play buttons + new expand buttons)
-  $$(".medbox .play, .vidside .expand").forEach(b=>b.addEventListener("click",e=>{
-    e.preventDefault();e.stopPropagation();
-    const box=b.closest("[data-vid]");lastFocus=b;
-    const v=$("#vmodalVid");v.src=box.dataset.vid;v.muted=false;$("#vmodal").showModal();v.play().catch(()=>{});}));
-  // side-by-side videos: play only while visible (skip autoplay entirely under reduced motion)
+  // ===== Inline video sound system — no modals, no new windows =====
+  // Every video plays MUTED on loop. Stop at a section (video mostly in view
+  // for a moment) and its VOICE turns on automatically — one video at a time.
+  // Scroll on and it drops back to muted loop. The 🔇/🔊 button overrides.
+  const setBtn=(v,on)=>{const b=v.closest(".vidside")?.querySelector(".expand");
+    if(b){b.textContent=on?"🔊 Voice on — tap to mute":"🔇 Muted — tap for voice";b.setAttribute("aria-pressed",String(on))}};
+  const soundOff=v=>{v.muted=true;setBtn(v,false)};
+  const soundOn=v=>{ if(!window.__audioOK)return;
+    $$("video[data-av]").forEach(x=>{if(x!==v)soundOff(x)});
+    v.muted=false;const p=v.play();if(p)p.catch(()=>{soundOff(v)});setBtn(v,true)};
+  // browsers only allow sound after a first user gesture anywhere on the page
+  if(!window.__audioWired){window.__audioWired=true;
+    const unlock=()=>{window.__audioOK=true};
+    addEventListener("pointerdown",unlock,{once:true,passive:true});
+    addEventListener("keydown",unlock,{once:true});
+    addEventListener("scroll",unlock,{once:true,passive:true});}
+  $$(".vidside").forEach(box=>{
+    const v=box.querySelector("video[data-av]"),b=box.querySelector(".expand");
+    if(!v||!b)return; setBtn(v,false);
+    b.onclick=e=>{e.preventDefault();e.stopPropagation();window.__audioOK=true;
+      if(v.muted){v.dataset.usermute="";soundOn(v)}
+      else{v.dataset.usermute="1";soundOff(v)}};
+  });
   if(!reduced){
+    // visibility: play in view, pause out of view
     const vio=new IntersectionObserver(es=>es.forEach(e=>{
       const v=e.target;
-      if(e.isIntersecting){v.play().catch(()=>{});}else{v.pause();}
-    }),{threshold:.25});
+      if(e.isIntersecting){v.play().catch(()=>{});}
+      else{v.pause();if(!v.muted)soundOff(v);delete v.dataset.usermute;}
+    }),{threshold:.15});
     $$("video[data-av]").forEach(v=>vio.observe(v));
+    // "stopped by the section" detector: when scrolling pauses for ~700ms,
+    // the video closest to the viewport centre (and ≥60% visible) gets VOICE;
+    // every other video drops to muted loop. Scrolling again re-mutes.
+    if(window.__voicePoll)clearInterval(window.__voicePoll);
+    let lastY=-1,stable=0;
+    window.__voicePoll=setInterval(()=>{
+      const vids=$$("video[data-av]");if(!vids.length)return;
+      const y=window.scrollY;
+      if(y===lastY){stable++}else{stable=0;lastY=y;}
+      const stopped=stable>=2; // position unchanged for ~600ms = you stopped here
+      if(!stopped){vids.forEach(v=>{if(!v.muted)soundOff(v)});return;}
+      const vh=innerHeight,mid=vh/2;let best=null,bestD=1e9;
+      vids.forEach(v=>{const r=v.getBoundingClientRect();
+        const vis=Math.max(0,Math.min(r.bottom,vh)-Math.max(r.top,0));
+        if(r.height&&vis/r.height>=.6){const d=Math.abs((r.top+r.bottom)/2-mid);if(d<bestD){bestD=d;best=v}}});
+      vids.forEach(v=>{if(v!==best&&!v.muted)soundOff(v)});
+      if(best&&best.muted&&best.dataset.usermute!=="1")soundOn(best);
+    },300);
   }
   syncTray();
 }
