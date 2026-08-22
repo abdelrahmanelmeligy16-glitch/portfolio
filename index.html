@@ -1342,9 +1342,9 @@ function wirePage(r,arg){
   // for a moment) and its VOICE turns on automatically — one video at a time.
   // Scroll on and it drops back to muted loop. The 🔇/🔊 button overrides.
   const setBtn=(v,on)=>{const b=v.closest(".vidside")?.querySelector(".expand");
-    if(b){b.textContent=on?"🔊 Voice on — tap to mute":"🔇 Muted — tap for voice";b.setAttribute("aria-pressed",String(on))}};
+    if(b){b.textContent=on?"🔊 Voice on — tap to mute":"🔇 Muted — tap to unmute";b.setAttribute("aria-pressed",String(on))}};
   const soundOff=v=>{v.muted=true;setBtn(v,false)};
-  const soundOn=v=>{ if(!window.__audioOK)return;
+  const soundOn=v=>{
     $$("video[data-av]").forEach(x=>{if(x!==v)soundOff(x)});
     v.muted=false;const p=v.play();if(p)p.catch(()=>{soundOff(v)});setBtn(v,true)};
   // browsers only allow sound after a first user gesture anywhere on the page
@@ -1381,13 +1381,12 @@ function wirePage(r,arg){
     // the video closest to the viewport centre (and ≥60% visible) gets VOICE;
     // every other video drops to muted loop. Scrolling again re-mutes.
     if(window.__voicePoll)clearInterval(window.__voicePoll);
-    let lastY=-1,stable=0;
+    // AUDIO-BY-DEFAULT: the video you're at (most-centered, >=60% in view) plays
+    // WITH voice; scrolling beyond it mutes it and hands voice to the next one.
+    // Click mutes (reverse control). Browser rule: before the visitor's first
+    // tap/scroll the browser blocks sound — we retry until it unlocks.
     window.__voicePoll=setInterval(()=>{
       const vids=$$("video[data-av]");if(!vids.length)return;
-      const y=window.scrollY;
-      if(y===lastY){stable++}else{stable=0;lastY=y;}
-      const stopped=stable>=2; // position unchanged for ~600ms = you stopped here
-      if(!stopped){vids.forEach(v=>{if(!v.muted)soundOff(v)});return;}
       const vh=innerHeight,mid=vh/2;let best=null,bestD=1e9;
       vids.forEach(v=>{const r=v.getBoundingClientRect();
         const vis=Math.max(0,Math.min(r.bottom,vh)-Math.max(r.top,0));
