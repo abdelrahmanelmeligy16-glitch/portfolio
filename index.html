@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A.ELMELIGY — AI Systems Observatory</title>
+<meta name="description" content="An inspectable portfolio of AI agent systems by Abdelrahman Elmeligy. Every claim evidence-graded.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FBF8F2'/%3E%3Ctext x='16' y='23' font-size='18' font-weight='500' text-anchor='middle' fill='%235A2A4A' font-family='Georgia,serif'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  /* Editorial ivory system — matched to the provided template */
+  --bg:#FBF8F2; --bg2:#F5F0E6; --sur1:#FFFEFB; --sur2:#F7F3EA; --sur3:#F0EADD;
+  --card:#FFFEFB; --line:#E0D8CA; --line2:#CDC3B0;
+  --blue:#5A2A4A; --blue2:#472138; --pale:#5A2A4A; --txt:#211D18; --dim:#3A362F; --dimr:#6E675C;
+  --faint:#8B8272;
+  --ok:#3E6B45; --warn:#96691E; --info:#5A4A7A; --gray:#8B8272;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Archivo",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r1:4px; --r2:8px; --r3:12px; --r4:16px;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px;
+  --sh1:0 1px 3px rgba(33,29,24,.06); --sh2:0 10px 34px rgba(33,29,24,.10);
+  --ac:var(--blue);
+  --t-micro:150ms; --t-comp:220ms; --t-page:320ms;
+}
+[data-theme="dark"]{
+  --bg:#171410; --bg2:#1d1913; --sur1:#201c16; --sur2:#282219; --sur3:#2f291f;
+  --card:#201c16; --line:#3a342a; --line2:#4d4537;
+  --blue:#c99bb6; --blue2:#dbb3ca; --pale:#e3c4d6; --txt:#f2ede4; --dim:#c9c2b4; --dimr:#928a7a;
+  --faint:#7d7566;
+  --ok:#7ec98a; --warn:#d9a94e; --info:#a98fd6; --gray:#928a7a;
+  --sh1:0 1px 3px rgba(0,0,0,.4); --sh2:0 10px 34px rgba(0,0,0,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important} }
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--s3)}
+a{color:var(--blue)} button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.skip{position:absolute;left:-9999px;top:0;background:var(--blue);color:#FBF8F2;padding:10px 16px;z-index:200;border-radius:0 0 8px 0;font-weight:700}
+.skip:focus{left:0}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+
+/* ============ APP SHELL ============ */
+header.bar{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1180px;margin:0 auto;padding:12px var(--s3);display:flex;align-items:center;gap:var(--s2)}
+.logo{font-family:var(--serif);font-weight:500;letter-spacing:.01em;font-size:1.12rem;white-space:nowrap}
+.logo b{color:var(--blue)}
+nav.main{display:flex;gap:4px;margin-left:var(--s2);flex:1}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.86rem;padding:7px 12px;border-radius:var(--r2);transition:all var(--t-micro)}
+nav.main a:hover{color:var(--txt);background:var(--card)}
+nav.main a[aria-current="page"]{color:var(--pale);background:var(--sur2);box-shadow:inset 0 0 0 1px var(--line)}
+.bar-actions{display:flex;gap:6px;align-items:center}
+.ibtn{padding:7px 11px;border:1px solid var(--line);border-radius:var(--r2);color:var(--dim);font-size:.8rem;display:inline-flex;gap:6px;align-items:center;transition:all var(--t-micro);min-height:34px}
+.ibtn:hover{color:var(--txt);border-color:var(--line2)}
+.ibtn[aria-pressed="true"]{color:var(--ok);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.07)}
+.kbd{font-size:.66rem;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--dimr)}
+#menuBtn{display:none}
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--blue);width:0;z-index:70;transition:width 80ms linear}
+
+/* mobile nav sheet */
+@media(max-width:860px){
+  nav.main{display:none}
+  #menuBtn{display:inline-flex}
+  .sheet{position:fixed;inset:0;z-index:80;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);display:none;flex-direction:column;padding:var(--s4)}
+  .sheet.open{display:flex}
+  .sheet a{color:var(--txt);text-decoration:none;font-size:1.3rem;font-weight:700;padding:14px 8px;border-bottom:1px solid var(--line)}
+  .sheet a[aria-current="page"]{color:var(--blue)}
+  .sheet .close{align-self:flex-end;font-size:1.4rem;color:var(--dim);padding:8px;min-width:44px;min-height:44px}
+}
+@media(min-width:861px){.sheet{display:none!important}}
+
+main#view{min-height:70vh;animation:pagein var(--t-page) ease}
+@keyframes pagein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.crumbs{font-size:.8rem;color:var(--dimr);padding-top:var(--s3)}
+.crumbs a{color:var(--dimr);text-decoration:none}.crumbs a:hover{color:var(--blue)}
+
+/* ============ COMMON ============ */
+.badge{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.3rem .68rem;border-radius:20px;border:1px solid;white-space:nowrap}
+.b-live{color:var(--ok);border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.07)}
+.b-verified{color:var(--blue);border-color:color-mix(in srgb,var(--blue) 40%,transparent);background:color-mix(in srgb,var(--blue) 8%,transparent)}
+.b-proto{color:var(--warn);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.07)}
+.b-arch{color:var(--info);border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.07)}
+.b-dormant{color:var(--gray);border-color:rgba(100,116,139,.45);background:rgba(100,116,139,.1)}
+.stag{color:var(--faint);font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase}
+h1{font-family:var(--serif);font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.14;letter-spacing:-.01em;font-weight:300}
+h2{font-family:var(--serif);font-size:clamp(1.35rem,2.5vw,1.9rem);letter-spacing:-.01em;margin:.35rem 0 .5rem;font-weight:400}
+h3{font-family:var(--serif);font-weight:500}
+.ssub{color:var(--dim);max-width:660px;font-size:.96rem}
+section.blk{padding:var(--s5) 0}
+.src{color:var(--faint);font-family:var(--mono);font-size:.64rem;opacity:.85}
+.grad{color:var(--blue);font-weight:500;font-style:italic}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+.chip{background:color-mix(in srgb,var(--blue) 9%,transparent);color:var(--pale);font-size:.72rem;padding:.28rem .65rem;border-radius:var(--r1)}
+.btn{padding:.8rem 1.6rem;border-radius:var(--r2);text-decoration:none;font-weight:600;font-size:.92rem;display:inline-flex;align-items:center;gap:8px;transition:all var(--t-micro);border:none;cursor:pointer;min-height:44px}
+.btn-p{background:var(--blue);color:#FBF8F2}
+.btn-p:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:var(--sh2)}
+.btn-g{background:transparent;color:var(--blue);border:1px solid var(--blue)}
+.btn-g:hover{background:var(--blue);color:#FBF8F2}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r3);box-shadow:var(--sh1)}
+.proof{margin-top:var(--s2);padding:14px 16px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.22);border-radius:var(--r2);font-size:.86rem;color:var(--dim)}
+.proof b{color:var(--ok)}
+.limits{margin-top:10px;padding:14px 16px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.22);border-radius:var(--r2);font-size:.86rem;color:var(--dim)}
+.limits b{color:var(--warn)}
+
+/* evidence mode */
+body.ev .src{opacity:1;font-size:.72rem;color:var(--warn)}
+body.ev [data-grade]{position:relative}
+body.ev [data-grade="verified"]{outline:1.5px solid rgba(74,222,128,.55);outline-offset:2px}
+body.ev [data-grade="partial"]{outline:1.5px solid rgba(251,191,36,.55);outline-offset:2px}
+body.ev [data-grade="arch"]{outline:1.5px dashed rgba(167,139,250,.6);outline-offset:2px}
+body.ev [data-grade="dormant"]{outline:1.5px dashed rgba(100,116,139,.6);outline-offset:2px;opacity:.75}
+.audit-only{display:none}
+body.ev .audit-only{display:inline}
+body.ev .market-only{display:none}
+#evNote{display:none;position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:65;background:var(--sur2);border:1px solid rgba(74,222,128,.4);color:var(--ok);font-size:.74rem;font-weight:700;padding:.5rem 1rem;border-radius:20px;box-shadow:var(--sh2)}
+body.ev #evNote{display:block}
+
+/* ============ DASHBOARD ============ */
+.hero2{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s5);align-items:center;padding:var(--s5) 0 var(--s4)}
+@media(max-width:900px){.hero2{grid-template-columns:1fr}}
+.kick{color:var(--faint);font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;margin-bottom:var(--s2)}
+.lede{color:var(--dim);font-size:1.08rem;max-width:560px;margin-top:var(--s2)}
+.prf{margin-top:var(--s2);display:grid;gap:8px}
+.prf div{font-size:.9rem;color:var(--dim)}
+.prf b{color:var(--txt)}
+.prf .tick{color:var(--ok);font-weight:800;margin-right:6px}
+.disc{margin-top:var(--s3);padding:14px 18px;border-left:3px solid var(--blue);background:var(--card);border-radius:0 var(--r2) var(--r2) 0;color:var(--dim);font-size:.9rem;max-width:640px}
+.disc b{color:var(--txt)}
+.ctarow{display:flex;gap:12px;margin-top:var(--s3);flex-wrap:wrap}
+
+/* governed autonomy map + diagrams */
+.mapbox{background:var(--sur1);border:1px solid var(--line);border-radius:var(--r4);padding:var(--s3);box-shadow:var(--sh2)}
+.mapbox h3{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+svg.flow{width:100%;height:auto;display:block}
+svg.flow .nd{cursor:pointer}
+svg.flow .nd rect,svg.flow .nd polygon{fill:var(--sur2);stroke-width:1.5;transition:all var(--t-micro)}
+svg.flow .nd text{fill:var(--txt);font-size:10.5px;font-weight:600;pointer-events:none}
+svg.flow .nd:hover rect,svg.flow .nd:focus rect,svg.flow .nd.sel rect,svg.flow .nd:hover polygon,svg.flow .nd.sel polygon{fill:var(--sur3);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--ac) 45%,transparent))}
+svg.flow .ed{stroke:var(--line2);stroke-width:1.5;fill:none;transition:stroke var(--t-micro)}
+svg.flow .ed.planned{stroke-dasharray:5 4;stroke:var(--dimr)}
+svg.flow .ed.hot{stroke:var(--ac);stroke-width:2.2}
+/* animated flow pulses along verified paths */
+svg.flow .pulse{fill:none;stroke:var(--ac);stroke-width:2;stroke-dasharray:3 14;stroke-linecap:round;opacity:.55;animation:flowdash 1.6s linear infinite;pointer-events:none}
+svg.flow .pulse.hot{opacity:1;stroke-width:2.6;animation-duration:.7s}
+@keyframes flowdash{to{stroke-dashoffset:-17}}
+@media (prefers-reduced-motion:reduce){svg.flow .pulse{animation:none;opacity:0}}
+svg.flow .nd rect,svg.flow .nd polygon{transform-box:fill-box;transform-origin:center;transition:transform var(--t-micro),filter var(--t-micro)}
+svg.flow .nd:hover rect,svg.flow .nd:focus rect,svg.flow .nd.sel rect,svg.flow .nd:hover polygon,svg.flow .nd.sel polygon{transform:scale(1.07)}
+/* node info popup */
+.mapbox{position:relative}
+.npop{position:absolute;z-index:20;width:min(300px,86%);background:var(--sur2);border:1px solid var(--line2);border-radius:var(--r3);padding:14px 16px;font-size:.84rem;color:var(--dim);box-shadow:var(--sh2);animation:poppin .18s ease}
+@keyframes poppin{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+.npop h4{color:var(--txt);font-size:.95rem;margin-bottom:4px;padding-right:26px}
+.npop .row{margin-top:6px}
+.npop .row b{color:var(--pale);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+.npop .xx{position:absolute;top:6px;right:6px;color:var(--dim);font-size:1rem;min-width:32px;min-height:32px}
+.npop .stchip{display:inline-block;font-size:.64rem;font-weight:700;padding:.15rem .5rem;border-radius:12px;margin-left:6px;vertical-align:1px}
+@media(max-width:700px){.npop{position:static;width:100%;margin-top:12px;animation:poppin .18s ease}}
+.k-input rect{stroke:var(--dim)} .k-orch rect{stroke:var(--blue)} .k-agent rect{stroke:var(--pale)}
+.k-memory rect{stroke:var(--info)} .k-policy rect{stroke:var(--warn)} .k-gate polygon{stroke:var(--warn);fill:var(--sur2)}
+.k-action rect{stroke:var(--blue2)} .k-evid rect{stroke:var(--ok)} .k-output rect{stroke:var(--ok)}
+.st-partial rect,.st-partial polygon{stroke-dasharray:4 3}
+.st-arch rect,.st-arch polygon{stroke-dasharray:2 3;opacity:.8}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:.68rem;color:var(--dimr)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:3px;border:1.5px solid;display:inline-block}
+.insp{margin-top:var(--s2);background:var(--sur2);border:1px solid var(--line);border-radius:var(--r2);padding:var(--s2);font-size:.86rem;color:var(--dim);display:none}
+.insp.open{display:block;animation:pagein var(--t-comp) ease}
+.insp.sroff{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;padding:0;margin:0;border:0}
+.insp h4{color:var(--txt);font-size:.95rem;margin-bottom:4px}
+.insp .row{margin-top:6px}
+.insp .row b{color:var(--pale);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+
+/* metric strip */
+.mstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:var(--s4) 0}
+@media(max-width:640px){.mstrip{grid-template-columns:1fr 1fr}}
+.met{background:var(--card);border:1px solid var(--line);border-radius:var(--r3);padding:16px 14px;text-align:left;cursor:pointer;transition:all var(--t-micro);min-width:0}
+.met .g{min-width:0;gap:6px}
+.met .g .src{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.met:hover{border-color:var(--line2);transform:translateY(-3px)}
+.met .n{font-family:var(--serif);font-size:2rem;font-weight:400;color:var(--blue)}
+.met .l{color:var(--dim);font-size:.8rem;margin-top:2px}
+.met .g{margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+.drawer{position:fixed;inset:auto 0 0 0;z-index:90;background:var(--sur1);border-top:1px solid var(--line2);border-radius:var(--r4) var(--r4) 0 0;padding:var(--s3);transform:translateY(105%);transition:transform var(--t-comp) ease;max-height:70vh;overflow:auto;box-shadow:var(--sh2)}
+.drawer.open{transform:none}
+.drawer .cmd{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;color:var(--pale);margin:10px 0;overflow-x:auto;white-space:pre}
+.drawer .x{float:right;color:var(--dim);font-size:1.2rem;padding:6px;min-width:44px;min-height:44px}
+
+/* charts */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:var(--s3)}
+@media(max-width:800px){.charts{grid-template-columns:1fr}}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s2)}
+.chart h4{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.hbar{display:grid;grid-template-columns:120px 1fr 46px;gap:8px;align-items:center;margin-bottom:8px;font-size:.78rem;color:var(--dim)}
+.hbar .tr{background:var(--sur2);border-radius:4px;height:12px;overflow:hidden}
+.hbar .fl{height:100%;border-radius:4px;background:var(--blue);transition:width .7s ease}
+
+/* ============ WORK ============ */
+.viewtabs,.tabs{display:flex;gap:6px;margin:var(--s3) 0;flex-wrap:wrap}
+.vt,.tab{padding:8px 16px;border-radius:var(--r2);border:1px solid var(--line);color:var(--dim);font-size:.84rem;font-weight:600;transition:all var(--t-micro);min-height:40px}
+.vt[aria-selected="true"],.tab[aria-selected="true"]{color:var(--pale);background:var(--sur2);border-color:var(--line2)}
+@media(max-width:640px){.tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px}.tab{white-space:nowrap}}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--s3);align-items:center}
+.filters select,.filters .fbtn{background:var(--sur1);border:1px solid var(--line);color:var(--dim);border-radius:var(--r2);padding:7px 10px;font-size:.8rem}
+.fbtn[aria-pressed="true"]{color:var(--pale);border-color:var(--blue)}
+.pgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s3);transition:all var(--t-comp);display:flex;flex-direction:column;gap:10px;position:relative}
+.pcard:hover{border-color:var(--ac);transform:translateY(-5px);box-shadow:var(--sh2)}
+.pcard.sz-l{grid-column:span 3}.pcard.sz-m{grid-column:span 2}.pcard.sz-s{grid-column:span 2}
+.pcard.has-vid{grid-column:span 6;padding:var(--s4)}
+.pcard.has-vid:nth-of-type(even){grid-template-columns:.92fr 1.08fr}
+.pcard.has-vid:nth-of-type(even) .ptext{order:2}
+.pcard.has-vid:nth-of-type(even) .vidside{order:1}
+@media(max-width:900px){.pcard.has-vid:nth-of-type(even){grid-template-columns:1fr}.pcard.has-vid:nth-of-type(even) .ptext{order:1}.pcard.has-vid:nth-of-type(even) .vidside{order:2}.pcard.has-vid{padding:var(--s3)}}
+@media(max-width:900px){.pcard.sz-l,.pcard.sz-m,.pcard.sz-s{grid-column:span 6}}
+.pcard h3{font-size:1.2rem;letter-spacing:-.4px}
+.pcard .p1{color:var(--dim);font-size:.87rem}
+.pcard .diff{color:var(--pale);font-size:.83rem}
+.pcard .thumb{height:auto;opacity:.9}
+.pcard .thumb svg{width:100%;height:auto;display:block}
+/* side-by-side text + video */
+.pcard.has-vid{display:grid;grid-template-columns:1.08fr .92fr;gap:22px;align-items:start}
+.pcard.has-vid .ptext{display:flex;flex-direction:column;gap:10px;min-width:0}
+.vidside{position:relative;border-radius:var(--r2);overflow:hidden;border:1px solid var(--line);background:#000;align-self:stretch;display:flex}
+.vidside video{width:100%;height:100%;object-fit:cover;display:block;min-height:200px}
+.vidside .lbl{position:absolute;top:8px;left:8px;z-index:2;background:color-mix(in srgb,var(--bg) 82%,transparent);border:1px solid var(--line);color:var(--dim);font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.24rem .55rem;border-radius:20px;max-width:90%}
+.vidside .expand{position:absolute;bottom:8px;right:8px;z-index:2;background:color-mix(in srgb,var(--bg) 78%,transparent);border:1px solid var(--line2);color:var(--pale);font-size:.72rem;padding:.35rem .7rem;border-radius:var(--r2);min-height:34px}
+.vidside .expand:hover{border-color:var(--blue)}
+@media(max-width:900px){.pcard.has-vid{grid-template-columns:1fr}.vidside{min-height:200px}}
+.ovwrap{display:grid;grid-template-columns:1.12fr .88fr;gap:var(--s3);align-items:start;margin-top:var(--s3)}
+.ovwrap .ovtext{display:grid;gap:14px;min-width:0}
+.ovwrap .ovstick{position:sticky;top:120px}
+@media(max-width:900px){.ovwrap{grid-template-columns:1fr}.ovwrap .ovstick{position:static}}
+.pcard .rowx{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:auto;flex-wrap:wrap}
+.cmp{font-size:.74rem;color:var(--dimr);display:flex;gap:6px;align-items:center;cursor:pointer}
+.cmp input{accent-color:var(--blue);width:16px;height:16px}
+.evtable{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:var(--s2)}
+.evtable th{text-align:left;color:var(--dimr);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;padding:8px;border-bottom:1px solid var(--line2)}
+.evtable td{padding:10px 8px;border-bottom:1px solid var(--line);color:var(--dim);vertical-align:top}
+.evtable td:first-child{color:var(--txt);font-weight:600}
+.tblwrap{overflow-x:auto}
+.empty{padding:var(--s5);text-align:center;color:var(--dimr);border:1px dashed var(--line2);border-radius:var(--r3);margin-top:var(--s2)}
+.tray{position:fixed;bottom:0;left:0;right:0;z-index:55;background:var(--sur1);border-top:1px solid var(--line2);padding:12px var(--s3);display:none;align-items:center;gap:12px;box-shadow:var(--sh2)}
+.tray.open{display:flex}
+.tray .names{flex:1;color:var(--dim);font-size:.85rem}
+
+/* compare */
+.cmp-grid{overflow-x:auto;margin-top:var(--s3)}
+.cmp-grid table{border-collapse:collapse;min-width:760px;width:100%}
+.cmp-grid th,.cmp-grid td{border:1px solid var(--line);padding:12px;font-size:.82rem;text-align:left;vertical-align:top;color:var(--dim)}
+.cmp-grid th{background:var(--sur2);color:var(--txt)}
+.cmp-grid td:first-child{color:var(--pale);font-weight:700;background:var(--sur1);white-space:nowrap}
+
+/* ============ PROJECT PAGE ============ */
+.phead{padding:var(--s4) 0 var(--s2);border-bottom:1px solid var(--line)}
+.phead .toprow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.phead p{color:var(--dim);max-width:720px;margin-top:8px}
+.ptabs{position:sticky;top:59px;z-index:40;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);padding:8px 0;border-bottom:1px solid var(--line)}
+.ovgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:var(--s3)}
+@media(max-width:800px){.ovgrid{grid-template-columns:1fr}}
+.ovcell{background:var(--card);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s3)}
+.ovcell h4{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
+.ovcell p,.ovcell li{color:var(--dim);font-size:.9rem}
+.ovcell ul{padding-left:18px}
+.vrec{margin-top:var(--s2)}
+.vrec summary{cursor:pointer;color:var(--pale);font-size:.86rem;font-weight:600;padding:10px 14px;background:var(--sur2);border:1px solid var(--line);border-radius:var(--r2)}
+.vrec[open] summary{border-radius:var(--r2) var(--r2) 0 0}
+.vrec .body{border:1px solid var(--line);border-top:none;border-radius:0 0 var(--r2) var(--r2);padding:14px;background:var(--bg);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--dim);overflow-x:auto}
+.vrec .body b{color:var(--ok)}
+.medbox{margin-top:var(--s3);border-radius:var(--r3);overflow:hidden;border:1px solid var(--line);position:relative;max-width:720px}
+.medbox .lbl{position:absolute;top:10px;left:10px;z-index:2;background:color-mix(in srgb,var(--bg) 85%,transparent);border:1px solid var(--line);color:var(--dim);font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.28rem .65rem;border-radius:20px}
+.medbox video{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.medbox .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);transition:background var(--t-micro)}
+.medbox .play:hover{background:rgba(0,0,0,.15)}
+.medbox .play i{width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--bg) 78%,transparent);border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--pale);font-size:1.4rem;font-style:normal}
+dialog.vmodal{border:none;background:transparent;max-width:min(960px,94vw);width:100%;padding:0}
+dialog.vmodal::backdrop{background:rgba(2,6,14,.85);backdrop-filter:blur(6px)}
+dialog.vmodal .inner{position:relative;border-radius:var(--r3);overflow:hidden;border:1px solid var(--line2)}
+dialog.vmodal video{width:100%;display:block}
+dialog.vmodal .x{position:absolute;top:8px;right:8px;z-index:3;background:rgba(2,6,14,.7);color:#fff;border-radius:50%;width:40px;height:40px;font-size:1.1rem}
+
+/* ============ ATLAS ============ */
+.atlas{display:grid;gap:10px;margin-top:var(--s3)}
+.alayer{display:grid;grid-template-columns:170px 1fr;gap:12px;align-items:stretch}
+@media(max-width:700px){.alayer{grid-template-columns:1fr}}
+.alayer .ln{color:var(--dimr);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center}
+.acells{display:flex;flex-wrap:wrap;gap:8px}
+.acell{background:var(--sur1);border:1px solid var(--line);border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:var(--dim);cursor:pointer;transition:all var(--t-micro)}
+.acell:hover{color:var(--txt);border-color:var(--line2)}
+.acell.sel{border-color:var(--ac);color:var(--pale)}
+.acell[data-st="verified"]{border-left:3px solid var(--ok)}
+.acell[data-st="partial"]{border-left:3px solid var(--warn)}
+.acell[data-st="arch"]{border-left:3px dashed var(--info)}
+.acell.hide{display:none}
+.guided{counter-reset:g;margin-top:var(--s3);display:grid;gap:10px}
+.guided div{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:14px 16px;color:var(--dim);font-size:.9rem;counter-increment:g;display:flex;gap:12px}
+.guided div::before{content:counter(g);color:var(--blue);font-weight:800;font-size:1.1rem}
+
+/* ============ SKILLS/EVIDENCE/LAB ============ */
+.mtx{border-collapse:collapse;width:100%;font-size:.76rem;min-width:820px}
+.mtx th{color:var(--dimr);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;padding:8px;border-bottom:1px solid var(--line2);text-align:left}
+.mtx td{padding:7px 8px;border-bottom:1px solid var(--line);color:var(--dim)}
+.mtx td:first-child{color:var(--txt);font-weight:600;white-space:nowrap}
+.cellr{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.66rem;font-weight:700;cursor:pointer;border:1px solid transparent}
+.cellr.vs{color:var(--ok);background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)}
+.cellr.de{color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,transparent);border-color:color-mix(in srgb,var(--blue) 30%,transparent)}
+.cellr.em{color:var(--warn);background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.3)}
+.cellr.ne{color:var(--dimr)} .cellr.na{color:var(--dimr);opacity:.5;cursor:default}
+.tierbands{display:grid;gap:12px;margin-top:var(--s3)}
+.tb{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:16px 18px}
+.tb h3{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.tb p{color:var(--dim);font-size:.88rem}
+.labgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:var(--s3)}
+.labc{background:var(--card);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s3)}
+.labc h3{font-size:1rem;margin:8px 0 4px}
+.labc p{color:var(--dim);font-size:.83rem}
+.labc .more{display:none;margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.labc.open .more{display:block}
+.labc .exp{color:var(--blue);font-size:.78rem;margin-top:10px;font-weight:600}
+
+/* ============ ABOUT/RESUME ============ */
+.jl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:var(--s2)}
+.jl div{background:var(--sur1);border:1px solid var(--line);border-radius:var(--r2);padding:12px;text-align:center;font-size:.8rem;color:var(--pale);font-weight:600}
+.resume{background:var(--sur1);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s4);max-width:860px;margin:var(--s3) auto}
+.resume h3{border-bottom:1px solid var(--line2);padding-bottom:6px;margin:22px 0 10px;font-size:1.02rem}
+.resume p,.resume li{font-size:.88rem;color:var(--dim)}
+.resume ul{padding-left:18px}
+.resume .rhead h2{margin:0}
+.resume .rhead p{color:var(--dim)}
+
+/* ============ RESUME VIEWER (template pattern) ============ */
+body.route-resume header.bar{display:none}
+body.route-resume footer{display:none}
+.viewbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:10px;padding:0 16px;background:var(--bg);border-bottom:2px solid var(--blue);min-height:56px}
+.vbtn{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--blue);background:transparent;color:var(--blue);padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;min-height:38px;border-radius:var(--r1);text-decoration:none;transition:background .18s,color .18s}
+.vbtn:hover{background:var(--blue);color:#FBF8F2}
+.vbtn.solid{background:var(--blue);color:#FBF8F2}
+.vbtn.solid:hover{background:var(--blue2)}
+.vtitle{font-weight:700;font-size:13.5px;color:var(--txt);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.rwrap{padding:28px 16px 64px;background:var(--bg2)}
+.rpage{max-width:850px;margin:0 auto 28px;background:#FFFEFB;color:#211D18;box-shadow:0 4px 24px rgba(33,29,24,.12);padding:56px 60px;border-radius:2px}
+[data-theme="dark"] .rpage{background:#FFFEFB;color:#211D18}
+.rpage,.rpage *{font-family:"Archivo",-apple-system,system-ui,sans-serif}
+.rname{font-family:"Newsreader",Georgia,serif !important;font-weight:400;font-size:34px;letter-spacing:-.01em;color:#211D18;line-height:1.1}
+.rname b{color:#5A2A4A;font-weight:500}
+.rsub{color:#565045;font-size:12.5px;margin-top:8px}
+.rsub a{color:#5A2A4A;text-decoration:none}
+.rlabel{font-family:"IBM Plex Mono",ui-monospace,monospace !important;font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#8B8272;margin:30px 0 8px;display:flex;align-items:center;gap:12px}
+.rlabel::after{content:"";flex:1;height:1px;background:#E0D8CA}
+.rpage p,.rpage li{font-size:12.5px;line-height:1.62;color:#3A362F}
+.rpage ul{padding-left:16px;margin-top:4px}
+.rpage li{margin-bottom:3px}
+.rrole{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;flex-wrap:wrap}
+.rrole h3{font-family:"Newsreader",Georgia,serif !important;font-weight:500;font-size:15.5px;color:#211D18}
+.rrole .rmeta{font-family:"IBM Plex Mono",ui-monospace,monospace !important;font-size:10px;color:#8B8272;letter-spacing:.06em;white-space:nowrap}
+.rrole .rco{color:#5A2A4A;font-weight:600;font-size:12px}
+.rdisc{margin-top:14px;padding:10px 14px;background:#F5F0E6;border-left:2px solid #5A2A4A;font-size:11.5px;color:#3A362F}
+.rcap{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;margin-top:4px}
+.rcap div{font-size:11.8px;line-height:1.5;color:#3A362F}
+.rcap b{color:#211D18}
+@media(max-width:700px){.rpage{padding:32px 22px}.rcap{grid-template-columns:1fr}.vtitle{display:none}}
+footer{border-top:1px solid var(--line);padding:var(--s5) 0 var(--s4);color:var(--dimr);font-size:.84rem;margin-top:var(--s5)}
+.foot-in{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+
+/* ============ PALETTE ============ */
+dialog.pal{border:none;background:transparent;width:min(560px,92vw);padding:0;margin-top:10vh}
+dialog.pal::backdrop{background:rgba(2,6,14,.7);backdrop-filter:blur(4px)}
+.pal-in{background:var(--sur1);border:1px solid var(--line2);border-radius:var(--r3);overflow:hidden;box-shadow:var(--sh2)}
+.pal-in input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);padding:16px 18px;color:var(--txt);font-size:1rem;outline:none}
+.pal-in ul{list-style:none;max-height:46vh;overflow:auto;padding:6px}
+.pal-in li{padding:10px 14px;border-radius:var(--r2);color:var(--dim);font-size:.9rem;cursor:pointer;display:flex;justify-content:space-between}
+.pal-in li.act,.pal-in li:hover{background:var(--sur2);color:var(--txt)}
+.pal-in li .k{color:var(--dimr);font-size:.72rem}
+
+/* ============ PRINT ============ */
+@media print{
+  header.bar,#progress,.tray,#evNote,.ptabs,.viewtabs,footer,.ctarow,.medbox,dialog,.crumbs,.drawer,.sheet,.viewbar,.no-print{display:none!important}
+  body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body:not(.route-resume) main#view{display:none}
+  .rwrap{background:#fff;padding:0}
+  .rpage{box-shadow:none;border-radius:0;max-width:100%;margin:0;padding:.35in .45in;page-break-after:always}
+  .rpage:last-child{page-break-after:auto}
+  .rrole,.rcap div,.rpage li{break-inside:avoid}
+  .rpage a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="bar">
+  <div class="bar-in">
+    <a href="#/" style="text-decoration:none;color:inherit"><span class="logo">A<b>.</b>ELMELIGY</span></a>
+    <nav class="main" aria-label="Primary">
+      <a href="#/" data-r="/">Dashboard</a>
+      <a href="#/systems" data-r="/systems">Systems</a>
+      <a href="#/work" data-r="/work">Work</a>
+      <a href="#/evidence" data-r="/evidence">Evidence</a>
+      <a href="#/lab" data-r="/lab">Lab</a>
+      <a href="#/skills" data-r="/skills">Skills</a>
+      <a href="#/about" data-r="/about">About</a>
+    </nav>
+    <div class="bar-actions">
+      <button class="ibtn" id="evBtn" aria-pressed="false" title="Toggle Evidence Mode">◈ Evidence</button>
+      <button class="ibtn" id="thBtn" title="Toggle theme" aria-label="Toggle light or dark theme">◐</button>
+      <button class="ibtn" id="palBtn" title="Command palette">⌘K <span class="kbd">K</span></button>
+      <button class="ibtn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Navigation">
+  <button class="close" id="sheetClose" aria-label="Close menu">✕</button>
+  <a href="#/">Dashboard</a><a href="#/systems">Systems Atlas</a><a href="#/work">Work</a>
+  <a href="#/evidence">Evidence</a><a href="#/lab">Lab</a><a href="#/skills">Skills</a>
+  <a href="#/about">About</a><a href="#/resume">Résumé</a>
+</div>
+
+<main id="view" class="wrap" tabindex="-1"></main>
+
+<div class="tray" id="tray">
+  <span class="names" id="trayNames"></span>
+  <button class="btn btn-p" id="trayGo">Compare</button>
+  <button class="btn btn-g" id="trayClear">Clear</button>
+</div>
+<div id="evNote">Evidence Mode — showing verification status · audited 2026-08-22</div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="false" aria-label="Metric evidence"><button class="x" id="drawerX" aria-label="Close">✕</button><div id="drawerBody"></div></div>
+
+<dialog class="vmodal" id="vmodal" aria-label="Concept video viewer">
+  <div class="inner">
+    <button class="x" id="vmodalX" aria-label="Close video">✕</button>
+    <div class="medbox" style="margin:0;border:none;border-radius:0;max-width:none"><span class="lbl">Concept visualization — AI-generated, not product footage</span></div>
+    <video id="vmodalVid" controls playsinline></video>
+  </div>
+</dialog>
+
+<dialog class="pal" id="pal" aria-label="Command palette">
+  <div class="pal-in">
+    <input id="palIn" type="text" placeholder="Type a command or search…" aria-label="Search commands">
+    <ul id="palList" role="listbox"></ul>
+  </div>
+</dialog>
+
+<footer>
+  <div class="wrap foot-in">
+    <div><b style="color:var(--txt)">Abdelrahman Elmeligy</b> — AI Workflow Systems Designer<br>
+      <a href="mailto:lfestberg@gmail.com">lfestberg@gmail.com</a> · <a href="https://instagram.com/almeligii" target="_blank" rel="noopener">@almeligii</a> · <a href="https://github.com/abdelrahmanelmeligy16-glitch" target="_blank" rel="noopener">GitHub</a></div>
+    <div>Evidence snapshot audited August 22, 2026.<br>Every public claim on this site is evidence-graded; methodology available on request.</div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ==================== DATA MODEL (single source of truth — from 2026-08-22 audit) ==================== */
+const AUDIT_DATE = "2026-08-22";
+const VID = {
+  kairo:"https://d8j0ntlcm91z4.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/hf_20260822_133154_3bb42cfc-d395-4e04-b038-9d136a049c05.mp4",
+  cc:"https://d8j0ntlcm91z4.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/hf_20260822_133142_ea86efdf-00d2-4c89-9abe-217921c011d4.mp4",
+  isg:"https://d8j0ntlcm91z4.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/hf_20260822_142642_804b8692-cd9e-4e41-b7d1-498a07243ff1.mp4",
+  abdul:"https://d8j0ntlcm91z4.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/hf_20260822_133142_58d92685-6a92-4903-9d95-b9b9ebbb5bde.mp4",
+  ella:"https://d8j0ntlcm91z4.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/hf_20260822_133142_ff8cbca0-87b6-4fcd-b55e-e02ac8143594.mp4",
+  mont:"https://d8j0ntlcm91z4.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/hf_20260822_133142_47aa012d-0eb2-4e87-99ab-07f47b5d12bf.mp4"
+};
+const PROJECTS = [
+{
+ id:"kairo", name:"KAIRO Intelligence", accent:"#5ac8fa", size:"l",
+ short:"An AI-native company operating system: a Company Digital Twin runs governed operating loops — agents propose, humans approve.",
+ problem:"A solo operator running real ventures needs company-grade operations — planning, execution, review, role separation — without headcount.",
+ user:"Founder-operators; initially the builder himself, deliberately.",
+ maturity:{cls:"b-verified",label:"Verified codebase",grade:"verified"},
+ diff:"It certifies its own tools with named failure modes — it measures its own trustworthiness.",
+ role:"Product vision, workflow & approval architecture, schema direction, evaluation/certification design, iteration across a real PR workflow, sale/diligence preparation.",
+ ai:"Nearly all implementation code, much documentation drafting, debugging — under direction and review. Honest limit: this codebase could not have been hand-written by the author.",
+ verified:[
+  "4,256 TypeScript source files (find count, excl. node_modules)",
+  "1,158 commits — re-derived: git rev-list --count HEAD",
+  "76 behavioral test files (RBAC, approval gates, GDPR checklist, buyer-readiness)",
+  "62 Supabase migrations; CI workflow present",
+  "20 locales counted incl. RTL (ar, ur): ls src/messages/",
+  "Acquisition data room: SHA256-verified sale copy + valuation brief"],
+ limitations:[
+  "Pre-revenue, zero customers (its own valuation brief states this first)",
+  "Vercel deployment currently offline — HTTP 402 DEPLOYMENT_DISABLED at audit",
+  "Tool certification in progress: 56 certified, 41 failed-with-cause, ~432 unknown",
+  "Measured quality debt: 540 warnings across 477 files",
+  "Test-suite green-run history not independently re-executed this audit"],
+ tech:["Next.js 16","React 19","TypeScript","Supabase","Stripe","Anthropic SDK","next-intl","CI"],
+ video:VID.kairo,
+ next:{milestone:"First paying customer (its own plan: 'the first customers are worth more than the next four months of code')",blockers:["Re-enable Vercel deployment (billing decision)","Finish certification of priority capabilities"],accept:"One external user completing a governed loop end-to-end in production."},
+ decisions:[
+  "529 thin tools vs 80–90 deep ones: chose consolidation + certification over feature count — the defining call.",
+  "Human approval gates as first-class objects with RBAC tests, not UI affordances.",
+  "Killed kairo-continuum (2,576-file sibling) — decommissioned into the main platform July 2026 rather than maintaining two surfaces.",
+  "AI initially produced plausible but thin tools at volume; redirected by building the certification pipeline that grades them instead of trusting them.",
+  "Lesson: in AI-generated codebases, verification is the scarce resource."],
+ wf:{nodes:[
+  {id:"biz",l:"Business state",layer:0,kind:"input",st:"verified",d:"The Digital Twin: company data, ventures, cadence in Postgres (62 migrations of schema evolution)."},
+  {id:"orch",l:"Operating loops",layer:1,kind:"orch",st:"verified",d:"Plan → propose → approve → execute → review as first-class loop objects."},
+  {id:"cat",l:"Capability catalog",layer:1,kind:"agent",st:"partial",d:"529 tools being consolidated to 80–90 certified. 56 certified at audit."},
+  {id:"cert",l:"Certification",layer:2,kind:"evid",st:"verified",d:"Grades every tool: certified / failed-with-named-mode / unknown."},
+  {id:"rbac",l:"RBAC policy",layer:2,kind:"policy",st:"verified",d:"Role-based access on loop actions; enforced by test suite (execution-rbac)."},
+  {id:"gate",l:"Human approval",layer:3,kind:"gate",st:"verified",d:"Irreversible actions require human sign-off; gate behavior covered by boardroom-gate tests."},
+  {id:"exec",l:"Execution",layer:4,kind:"action",st:"partial",d:"Stripe, Anthropic, HeyGen integrations wired; live journeys unverified while deployment is offline."},
+  {id:"log",l:"Audit trail",layer:5,kind:"evid",st:"verified",d:"Loop history recorded; diligence-room evidence discipline."},
+  {id:"out",l:"Company output",layer:6,kind:"output",st:"partial",d:"Operational outcomes for the operator; no external users yet."}],
+  edges:[["biz","orch"],["orch","cat"],["cat","cert"],["orch","rbac"],["rbac","gate"],["cat","gate"],["gate","exec"],["exec","log"],["log","orch"],["exec","out"]],
+  planned:[["out","biz"]]},
+ evidence:[
+  {claim:"1,158 commits with PR workflow",type:"command",src:"git rev-list --count HEAD → 1158 (branch main; PR #379 merged)",result:"VERIFIED",proves:"Iteration volume and process discipline",not:"Does not prove production adoption or code quality"},
+  {claim:"20 locales incl. RTL",type:"command",src:"ls ~/dev/kairo-intelligence/src/messages/ → 20 dirs incl. ar, ur",result:"VERIFIED",proves:"Production-intent localization",not:"Does not prove translation completeness"},
+  {claim:"Deployed at kairo-intelligence.com",type:"command",src:"curl -sI https://kairo-intelligence.com → HTTP 402, x-vercel-error: DEPLOYMENT_DISABLED",result:"DOWNGRADED",proves:"A real Vercel deployment existed",not:"Site is NOT currently reachable"},
+  {claim:"Tool certification with named failure modes",type:"document",src:"KAIRO_MASTER_PLAN_20260808.txt (verbatim): '56 certified anchors, 41 failed with named failure modes, ~432 unknown'",result:"VERIFIED (in progress)",proves:"Evaluation discipline exists and runs",not:"Does not mean the catalog is certified"},
+  {claim:"76 test files + CI",type:"file-audit",src:"find … -name '*.test.*' → 76; .github/workflows/ci.yml present",result:"VERIFIED (presence)",proves:"Test infrastructure exists",not:"Suites were not re-executed this audit"},
+  {claim:"Production build passes from a fresh clone",type:"reproduced-run",src:"3 attempts logged: default → V8 OOM; 8GB heap → ENOSPC; KAIRO_NO_WEBPACK_CACHE=1 + 8GB heap → SUCCESS: 72-route table + .next/BUILD_ID (verification-logs/kairo-intelligence-build.log)",result:"VERIFIED",proves:"The 4,256-file platform genuinely compiles end-to-end — and its author documented the exact resource workaround in next.config.ts before we needed it",not:"Build requires the documented flags on 8GB-class machines"}],
+ skills:{"AI product strategy":"vs","Workflow architecture":"vs","Agent orchestration":"vs","Prompt & context design":"de","Governed automation":"vs","Human-in-the-loop systems":"vs","Product requirements":"vs","Evaluation & QA":"de","Rapid AI prototyping":"vs","UX direction":"de","Technical documentation":"vs","Business-model thinking":"vs","Integration planning":"de","Testing & debugging":"em","Production operations":"ne","ML engineering":"ne","Hand-coded engineering":"ne"}
+},
+{
+ id:"creator-command", name:"Creator Command (BOLT)", accent:"#7dd3fc", size:"l",
+ short:"An autonomous social-revenue operator running live: ten scheduled jobs research, produce, distribute, and measure content for a real 141K-follower account — writing their own audit log.",
+ problem:"Operating a large social account solo consumes the operator; the pipeline is loop-shaped and automatable — if failure handling, audit, and human gates are designed in.",
+ user:"The operator of @almeligii (141K followers) — a real business asset.",
+ maturity:{cls:"b-live",label:"Running live",grade:"verified"},
+ diff:"Not a demo: its audit log had entries from the morning of the audit, and it logs its own failures with causes.",
+ role:"Loop design, scheduling architecture, the advisory-brain integration (THE ABDUL consulted as 'CEO memory'), failure-logging philosophy, runbook.",
+ ai:"Implementation under direction; ops scripts and instrumentation largely AI-generated and human-reviewed.",
+ verified:[
+  "audit.jsonl (348KB) modified 2026-08-22 07:30 — checked the same day",
+  "10 launchd scheduled jobs — counted in ~/Library/LaunchAgents",
+  "199 commits re-derived (git rev-list --count)",
+  "Dated digest/sweep/ledger reports present; 2 n8n workflow exports",
+  "Live failure entries verbatim in log (Google token HTTP 400; usage-window closure)"],
+ limitations:[
+  "No formal unit-test files — 20+ ops/test-*.mjs scripts instead; no CI",
+  "YouTube publishing currently failing (expired Google refresh token — logged by the system itself)",
+  "Working branch ahead of main (content-bank-and-video-contract)",
+  "Single-operator deployment; holds real credentials → shown via excerpts only",
+  "No attribution claim: the audience predates the system"],
+ tech:["Next.js","TypeScript","launchd","n8n","Multi-LLM","Voice I/O","OpenTelemetry"],
+ video:VID.cc,
+ next:{milestone:"Restore YouTube leg + record a live-log walkthrough demo",blockers:["Google re-auth (owner credential action)"],accept:"All 10 scheduled jobs green for 7 consecutive days with zero unexplained log gaps."},
+ decisions:[
+  "Ops-scripts-as-tests over a formal suite: a speed tradeoff for a personal production system — the successor project (ISG) shipped 289 formal tests, showing the method updated.",
+  "launchd on owned hardware over cloud cron: the credentials and data are the business; they never leave.",
+  "Failure logging as a feature: expired tokens and usage-window closures are recorded with cause, not swallowed.",
+  "THE ABDUL merged in as an advisory service — the system consults the operator's accumulated judgment before consequential choices."],
+ wf:{nodes:[
+  {id:"sig",l:"Market signals",layer:0,kind:"input",st:"verified",d:"Research inputs: trends, competitors, comment streams."},
+  {id:"brain",l:"Primary brain",layer:1,kind:"orch",st:"verified",d:"Primary reasoning model directs the loop; advisory specialist models consulted."},
+  {id:"abdul",l:"THE ABDUL memory",layer:1,kind:"memory",st:"verified",d:"Advisory 'CEO brain' — the operator's indexed decision history, consulted as a service."},
+  {id:"prod",l:"Content production",layer:2,kind:"agent",st:"verified",d:"Content bank + generation; dated digests as ledger."},
+  {id:"gate",l:"Operator approval",layer:3,kind:"gate",st:"verified",d:"Human approval on the irreversible steps per RUNBOOK."},
+  {id:"dist",l:"Distribution",layer:4,kind:"action",st:"partial",d:"Instagram path live; YouTube leg failing on token refresh (HTTP 400, logged)."},
+  {id:"meas",l:"Measurement",layer:5,kind:"agent",st:"verified",d:"Sweeps and weekly reports, dated on disk."},
+  {id:"log",l:"audit.jsonl",layer:5,kind:"evid",st:"verified",d:"348KB self-written audit log; entries the morning of the audit."},
+  {id:"out",l:"Revenue ops",layer:6,kind:"output",st:"partial",d:"Operates the account daily; revenue attribution not claimed."}],
+  edges:[["sig","brain"],["abdul","brain"],["brain","prod"],["prod","gate"],["gate","dist"],["dist","meas"],["meas","brain"],["dist","log"],["brain","log"],["meas","out"]],
+  planned:[]},
+ evidence:[
+  {claim:"Runs autonomously in production",type:"command",src:"stat data/audit.jsonl → modified 2026-08-22 07:30 (same-day check); 10 launchd plists counted",result:"VERIFIED",proves:"The system executes on schedule unattended and records itself",not:"Does not prove revenue impact or audience growth"},
+  {claim:"Logs its own failures",type:"log-verbatim",src:'audit log: company_mission_failed … "You\'re out of extra usage · resets 8am"; RUNBOOK: "Google refresh token rejected (HTTP 400)"',result:"VERIFIED",proves:"Failure-aware autonomy — errors carry causes",not:"Does not mean all failure classes are handled"},
+  {claim:"199 commits",type:"command",src:"git rev-list --count HEAD → 199",result:"VERIFIED",proves:"Focused three-week build cadence",not:"Not a maturity guarantee"}],
+ skills:{"AI product strategy":"de","Workflow architecture":"vs","Agent orchestration":"vs","Prompt & context design":"vs","Governed automation":"vs","Human-in-the-loop systems":"de","Product requirements":"de","Evaluation & QA":"em","Rapid AI prototyping":"vs","UX direction":"em","Technical documentation":"vs","Business-model thinking":"de","Integration planning":"de","Testing & debugging":"de","Production operations":"em","ML engineering":"ne","Hand-coded engineering":"ne"}
+},
+{
+ id:"isg", name:"Instagram Social Gateway", accent:"#34d399", size:"l",
+ short:"The safety layer between AI agents and a real social business: an 18-tool MCP server where agents can draft and request — but 'publish' only exists as 'publish_approved'. 289 passing tests.",
+ problem:"Letting agents touch a 141K-follower account safely requires typed contracts, approval gates, and auditability — a gateway, not a script.",
+ user:"The account operator; agents are the constrained consumers.",
+ maturity:{cls:"b-verified",label:"Verified — tests green",grade:"verified"},
+ diff:"The governance is in the type system: tool names encode the approval flow. Mock-by-default: nothing reaches the real account without explicit credentials.",
+ role:"Workspace architecture, contract-first package design, the approval-flow shape, the mock-default safety decision, the 2-hourly content loop's usage-window/crash discrimination.",
+ ai:"Implementation and test scaffolding under direction; independently re-verified cold.",
+ verified:[
+  "262/262 unit + 27/27 contract tests pass — reproduced in a clean copy",
+  "Typecheck: 0 errors · Lint: 0 findings · Build: 8 packages + Next.js app all green",
+  "18 MCP tool definitions inspected (create_draft, request_approval, publish_approved…)",
+  "Worker: FOR UPDATE SKIP LOCKED job claiming; MockInstagramProvider fallback verified in source",
+  "11 timestamped autonomous content-cycle runs incl. one retry"],
+ limitations:[
+  "Integration suite (65 tests) needs local Postgres — every failure is ECONNREFUSED, environmental",
+  "Playwright e2e not executed",
+  "Live Meta path exercised only against the mock provider",
+  "packages/ui is an empty placeholder",
+  "Days old — longevity unproven"],
+ tech:["pnpm monorepo","TypeScript","MCP","Vitest","Playwright","Postgres","S3"],
+ video:VID.isg,
+ next:{milestone:"Integration tests green + first live publish via a burner account",blockers:["Local Postgres at :5433","Meta credential review"],accept:"65 integration tests pass; one approval-gated publish reaches a test account with full audit trail."},
+ decisions:[
+  "Monorepo with a contracts package over a single app: slower start, typed boundaries — why the suite could go green this early.",
+  "Mock-by-default over a config flag: unsafe states must be explicit, never default.",
+  "Approval encoded in tool names (publish_approved) so governance survives any client.",
+  "The 2-hour loop distinguishes an external usage-window closure from a crash — retry only what's actually broken."],
+ wf:{nodes:[
+  {id:"agent",l:"AI agents",layer:0,kind:"input",st:"verified",d:"Any MCP client; authenticated with bearer token, rate-limited."},
+  {id:"mcp",l:"MCP server (18 tools)",layer:1,kind:"orch",st:"verified",d:"StreamableHTTP transport; tools shape what agents may do."},
+  {id:"con",l:"Contracts pkg",layer:1,kind:"policy",st:"verified",d:"Shared types across all apps — 27 contract tests."},
+  {id:"draft",l:"Draft store",layer:2,kind:"memory",st:"verified",d:"Drafts persisted via database package (Postgres)."},
+  {id:"gate",l:"Human approval",layer:3,kind:"gate",st:"verified",d:"request_approval → human decision; publish exists only for approved items."},
+  {id:"work",l:"Worker",layer:4,kind:"agent",st:"verified",d:"Claims one due job per tick (FOR UPDATE SKIP LOCKED); maintenance: stale-approval expiry, insights refresh."},
+  {id:"mock",l:"Mock provider",layer:4,kind:"policy",st:"verified",d:"Default target unless live creds explicitly present — logs that nothing reached Instagram."},
+  {id:"meta",l:"Meta Graph API",layer:5,kind:"action",st:"arch",d:"Live path implemented but not exercised — mock-only so far."},
+  {id:"log",l:"Audit + insights",layer:5,kind:"evid",st:"verified",d:"Job history and media insights captured."},
+  {id:"out",l:"Published content",layer:6,kind:"output",st:"arch",d:"No live publish yet — by design, pending burner-account certification."}],
+  edges:[["agent","mcp"],["mcp","con"],["mcp","draft"],["draft","gate"],["gate","work"],["work","mock"],["work","log"]],
+  planned:[["work","meta"],["meta","out"]]},
+ evidence:[
+  {claim:"289 tests passing, clean build",type:"reproduced-run",src:"clean-copy rerun: pnpm test:unit → 262/262; pnpm test:contract → 27/27; typecheck 0 errors; lint 0; build 9/9 units (logs: verification-logs/isg-*.log)",result:"VERIFIED",proves:"The codebase builds and its tested behavior holds, independently",not:"Does not cover e2e or the live Instagram path"},
+  {claim:"Approval-gated publishing",type:"source-inspection",src:"apps/mcp/src/tools.ts — 18 tools; publish tool is instagram_publish_approved only",result:"VERIFIED (code)",proves:"Governance is structural, not procedural",not:"Runtime not launched this audit (needs env/DB)"},
+  {claim:"65 integration tests fail",type:"reproduced-run",src:"every failure: Error: connect ECONNREFUSED 127.0.0.1:5433",result:"ENV-BLOCKED",proves:"Failures are missing-Postgres, not code faults",not:"They are still not green until run against a DB"}],
+ skills:{"AI product strategy":"de","Workflow architecture":"vs","Agent orchestration":"vs","Prompt & context design":"de","Governed automation":"vs","Human-in-the-loop systems":"vs","Product requirements":"vs","Evaluation & QA":"vs","Rapid AI prototyping":"vs","UX direction":"em","Technical documentation":"de","Business-model thinking":"em","Integration planning":"vs","Testing & debugging":"vs","Production operations":"em","ML engineering":"ne","Hand-coded engineering":"ne"}
+},
+{
+ id:"the-abdul", name:"THE ABDUL", accent:"#a78bfa", size:"m",
+ short:"A personal AI memory system: 1,927 working sessions ingested into a live 6.8GB search index behind a 152-line dependency-free Python server — the advisory brain the other systems consult.",
+ problem:"High-velocity AI-assisted work produces more decision-context than any human retains; losing it means re-deriving your own judgment.",
+ user:"The builder — and his agents, which consult it as a service.",
+ maturity:{cls:"b-proto",label:"Prototype (live index)",grade:"partial"},
+ diff:"Memory as an agent-consumable service: a production system (Creator Command) queries it before consequential decisions.",
+ role:"Entire concept and architecture; the memory-as-service pattern; the two-machine topology (build laptop + always-on mini server).",
+ ai:"Ingest scripts and server implementation under direction.",
+ verified:[
+  "abdul.db + -shm + -wal live at audit (re-checked same day)",
+  "6.83GB SQLite index; 1,927 session .jsonl files counted",
+  "Ingest pipeline present: ingest.py, corpus.py, photos.py, twin.py with dated logs",
+  "server.py read: 152 lines, stdlib only (json, sqlite3, urllib, BaseHTTPRequestHandler)",
+  "Git-tracked agent memory: decisions.md, learnings.md, playbooks.md"],
+ limitations:[
+  "No tests; no auth on the local API (local-only by design, still a gap)",
+  "Contents inherently personal → demonstrated only with curated queries",
+  "SQL retrieval, not semantic embeddings — deliberate simplicity-first choice",
+  "Single-user by design"],
+ tech:["Python (stdlib)","SQLite + WAL","JSONL corpus","Multi-machine"],
+ video:VID.abdul,
+ next:{milestone:"Semantic retrieval layer + basic auth",blockers:["Embedding pipeline choice","Retrieval-quality eval design"],accept:"Side-by-side eval where semantic retrieval beats SQL full-text on 20 curated queries."},
+ decisions:[
+  "SQLite over a vector DB: 80% of the value, 0% of the operational surface. Embeddings are the milestone, not the foundation.",
+  "Zero dependencies on purpose — nothing to rot on a personal always-on server.",
+  "Memory exposed as an HTTP service so agents, not just the human, can consult it.",
+  "Two machines: heavy ingest on the laptop, serving from the always-on mini."],
+ wf:{nodes:[
+  {id:"src",l:"1,927 sessions",layer:0,kind:"input",st:"verified",d:"Raw session JSONL + files + photos."},
+  {id:"ing",l:"Ingest pipeline",layer:1,kind:"agent",st:"verified",d:"ingest.py / corpus.py / photos.py / twin.py with dated run logs."},
+  {id:"db",l:"6.8GB SQLite index",layer:2,kind:"memory",st:"verified",d:"WAL-mode index, live at audit."},
+  {id:"api",l:"152-line API",layer:3,kind:"orch",st:"partial",d:"Stdlib HTTP server; no auth (local-only)."},
+  {id:"me",l:"Human search",layer:4,kind:"output",st:"verified",d:"Direct queries by the operator."},
+  {id:"cc",l:"Creator Command",layer:4,kind:"action",st:"verified",d:"Consults it as its advisory CEO brain."},
+  {id:"gitm",l:"Git-tracked memory",layer:2,kind:"evid",st:"verified",d:"Distilled decisions/learnings/playbooks loaded into agent context."},
+  {id:"emb",l:"Semantic layer",layer:3,kind:"agent",st:"planned",d:"Planned embeddings + retrieval eval."}],
+  edges:[["src","ing"],["ing","db"],["db","api"],["api","me"],["api","cc"],["ing","gitm"]],
+  planned:[["db","emb"],["emb","api"]]},
+ evidence:[
+  {claim:"Live 6.8GB index over 1,927 sessions",type:"command",src:"ls index/ → abdul.db, abdul.db-shm, abdul.db-wal (live 2026-08-22); session file count 1,927",result:"VERIFIED",proves:"The corpus and index are real and in use",not:"Does not prove retrieval quality"},
+  {claim:"152-line stdlib server",type:"source-inspection",src:"server.py read in full — json/sqlite3/urllib/BaseHTTPRequestHandler, no frameworks",result:"VERIFIED",proves:"Deliberate minimalism",not:"It is not a product-grade API"}],
+ skills:{"AI product strategy":"de","Workflow architecture":"de","Agent orchestration":"de","Prompt & context design":"vs","Governed automation":"em","Human-in-the-loop systems":"em","Product requirements":"em","Evaluation & QA":"ne","Rapid AI prototyping":"vs","UX direction":"ne","Technical documentation":"de","Business-model thinking":"ne","Integration planning":"de","Testing & debugging":"em","Production operations":"em","ML engineering":"ne","Hand-coded engineering":"ne"}
+},
+{
+ id:"ella", name:"E.L.L.A", accent:"#c8a87e", size:"m",
+ short:"A premium creator-business platform — content, services, podcast, products, community in one owned system — with a committed black-and-gold design system including docs written for AI agents as users.",
+ problem:"Creators rent their business from five platforms at once, fragmenting audience and data. E.L.L.A is the owned alternative.",
+ user:"A premium solo creator (built for a specific person).",
+ maturity:{cls:"b-proto",label:"Prototype",grade:"partial"},
+ diff:"Design-system-as-artifact: tokens, UI kits, brand SVGs, and an agent-facing build guide committed to the repo.",
+ role:"Product scope, information architecture, the tokenized design language, the agent-facing documentation method.",
+ ai:"Implementation under direction.",
+ verified:[
+  "Working tree inspected: 13 public pages, full admin CRUD dashboard, auth-protected routes",
+  "Supabase initial schema migration present; .vercel/ evidences prior deployment",
+  "Design-system handoff committed: tokens, public/admin UI kits, brand assets, agent guide",
+  "4 related GitHub repos observed (ella, e.l.l.a, ella-platform, e.l.l.a.-studio)"],
+ limitations:[
+  "Git history partially lost to cloud-sync corruption (.git.corrupt-20260705 alongside a single recovery commit) — never quote a commit count",
+  "Not currently deployed; no users",
+  "4 sibling repos need consolidation"],
+ tech:["Next.js 16","Supabase","Tailwind 4","Design tokens","Vercel"],
+ video:VID.ella,
+ next:{milestone:"Consolidate to one canonical repo + redeploy",blockers:["Repo consolidation decision","Vercel redeploy (paid/owner)"],accept:"One repo, one live URL, admin login functioning end-to-end."},
+ decisions:[
+  "Docs addressed to future AI sessions as first-class users — measurably reduces drift across AI-assisted iterations.",
+  "Tokenized black/gold identity committed to the repo, not a Figma file.",
+  "Post-corruption: repositories now live outside cloud-synced folders; backups are tarballs, not sync.",
+  "Disclosed the scar: a portfolio that hides its accidents isn't evidence."],
+ wf:{nodes:[
+  {id:"crea",l:"Creator",layer:0,kind:"input",st:"verified",d:"Owner-operator producing content, services, products."},
+  {id:"adm",l:"Admin dashboard",layer:1,kind:"orch",st:"verified",d:"Full CRUD over every entity; DataTable/EntityForm components."},
+  {id:"db",l:"Supabase",layer:2,kind:"memory",st:"verified",d:"Postgres + Auth + RLS; initial schema migration."},
+  {id:"auth",l:"Auth guard",layer:2,kind:"policy",st:"verified",d:"proxy.ts protection on /admin routes."},
+  {id:"pub",l:"13 public pages",layer:3,kind:"output",st:"verified",d:"Content hub, services, podcast, shop, community."},
+  {id:"ds",l:"Design system",layer:1,kind:"evid",st:"verified",d:"Committed tokens/kits + agent-facing guide."},
+  {id:"dep",l:"Vercel deploy",layer:4,kind:"action",st:"dormant",d:"Previously deployed; currently offline."}],
+  edges:[["crea","adm"],["adm","db"],["auth","adm"],["db","pub"],["ds","pub"],["ds","adm"]],
+  planned:[["pub","dep"]]},
+ evidence:[
+  {claim:"Working platform with admin CRUD",type:"source-inspection",src:"working tree inspected: (public)/(admin) route groups, server actions, migration SQL",result:"VERIFIED (structure)",proves:"A real implemented app, not a mockup",not:"Not currently running/deployed; user journeys unverified this audit"},
+  {claim:"History lost honestly disclosed",type:"file-audit",src:".git.corrupt-20260705 dir + single recovery commit ('Recover ella-build working tree after cloud-sync eviction')",result:"VERIFIED",proves:"The incident and the recovery",not:"Prior commit narrative is unrecoverable"}],
+ skills:{"AI product strategy":"de","Workflow architecture":"de","Agent orchestration":"ne","Prompt & context design":"de","Governed automation":"ne","Human-in-the-loop systems":"ne","Product requirements":"de","Evaluation & QA":"ne","Rapid AI prototyping":"vs","UX direction":"vs","Technical documentation":"vs","Business-model thinking":"de","Integration planning":"em","Testing & debugging":"em","Production operations":"em","ML engineering":"ne","Hand-coded engineering":"ne"}
+}
+];
+const METRICS=[
+ {v:5,disp:"5",label:"Platforms with real codebases",cmd:"Audit sweep 2026-08-22: kairo-intelligence, creator-command, isg, the-abdul, ella-build — each with inspected source",scope:"local + ORICO drives",proves:"Breadth of shipped systems in a 90-day window.",not:"Not all are deployed; maturity varies (see badges)."},
+ {v:1158,disp:"1,158",label:"Commits — flagship repo",cmd:"git rev-list --count HEAD → 1158 (kairo-intelligence, branch main)",scope:"kairo-intelligence",proves:"Iteration volume with a real PR workflow.",not:"Commit count does not prove production adoption."},
+ {v:289,disp:"289",label:"Tests passing (ISG)",cmd:"pnpm test:unit → 262/262 · pnpm test:contract → 27/27 (clean-copy rerun; logs retained)",scope:"instagram-social-gateway",proves:"Tested behavior holds under independent reproduction.",not:"Excludes e2e and 65 env-blocked integration tests."},
+ {v:10,disp:"10",label:"Scheduled agent jobs live",cmd:"ls ~/Library/LaunchAgents | grep -ci … → 10 plists",scope:"creator-command",proves:"Real unattended production scheduling.",not:"Job count ≠ job success; one leg currently failing (logged)."},
+ {v:141,disp:"141K",label:"Instagram audience",cmd:"@almeligii — owner-attested; consistent across project docs",scope:"attested, not re-verified this audit",proves:"A real distribution asset and communication skill.",not:"No causal claim: the automation systems did not build this audience."}
+];
+const LAB=[
+ {n:"Job-search command bus",tag:"automation",hyp:"My own job search can run on the same governed-automation pattern as my products.",exists:"JSONL command queue + processed log + dashboard-health.json, Python bridge & state validator (files re-verified at audit) + document-generation pipeline.",ev:"Runtime files counted 2026-08-22. Private: shown as architecture only.",lesson:"Queue + health-check + validator is a reusable trio for any personal automation.",state:"Running (private)",why:"Personal data adjacency — never public.",badge:"b-live"},
+ {n:"Remotion pitch video",tag:"video",hyp:"Video is code: a pitch can be a React render.",exists:"Remotion project + rendered 15MB MP4 + SEND_KIT.md — it shipped.",ev:"Files present; output dated 2026-07-06.",lesson:"Programmatic video is a real capability for product marketing.",state:"Shipped deliverable",why:"One-off deliverable, not a system.",badge:"b-verified"},
+ {n:"NoCap growth pack",tag:"content",hyp:"Creator-growth expertise can be packaged as a 25-skill agent plugin.",exists:"Claude Code plugin: 25 markdown skills (hooks, carousels, competitor intel, brand voice).",ev:"Plugin manifest + skills listed at audit.",lesson:"Prompt frameworks are products too — but need distribution.",state:"Prompt framework",why:"No executable code — docs-only by nature.",badge:"b-arch"},
+ {n:"trillion (assistant)",tag:"architecture",hyp:"Docs-first: write the architecture (12 documents) before tier-1 code.",exists:"DDD-style scaffold, 2 commits, 12 architecture docs (security, memory, verification, heartbeat).",ev:"Repo inspected; last commit 2026-08-13.",lesson:"Docs-first exposes design flaws cheaply — but momentum matters; it stalled at tier 0.",state:"Architecture only",why:"Implementation never started in earnest.",badge:"b-arch"},
+ {n:"MONT",tag:"business",hyp:"M&A deal-flow can be productized: auth, org model, deal shell, mandate wizard.",exists:"Next.js+Supabase phases 0–1, 24 commits, Playwright/Vitest configured.",ev:"Both copies inspected; dormant since 2026-06-23. (Correction recorded: this is a deal-room platform, not a portfolio site.)",lesson:"Test infra from day one is cheap; abandoning cleanly is fine.",state:"Dormant prototype",why:"Paused June 2026; superseded by KAIRO focus.",badge:"b-dormant",video:VID.mont},
+ {n:"KAIRO design corpus",tag:"architecture",hyp:"A platform can be generated from a structured prompt corpus.",exists:"20+ ordered PART directories with SHA256 checksums — the design corpus KAIRO was built from.",ev:"Corpus listed at audit; zero executable code.",lesson:"Directed AI development at scale needs an ordered, checksummed source of truth.",state:"Design corpus",why:"Provenance artifact, not a product.",badge:"b-arch"}
+];
+const SKILL_ROWS=["AI product strategy","Workflow architecture","Agent orchestration","Prompt & context design","Governed automation","Human-in-the-loop systems","Product requirements","Evaluation & QA","Rapid AI prototyping","UX direction","Technical documentation","Business-model thinking","Integration planning","Testing & debugging","Production operations","ML engineering","Hand-coded engineering"];
+const RATING_LABEL={vs:"Verified strong",de:"Demonstrated",em:"Emerging",ne:"Not evidenced",na:"N/A"};
+const GA_NODES=[
+ {id:"in",l:"Inputs & signals",layer:0,kind:"input",st:"verified",d:"Business state, market signals, user requests.",proj:"All five systems"},
+ {id:"orch",l:"Planner / orchestrator",layer:1,kind:"orch",st:"verified",d:"A primary reasoning model owns the loop and directs specialists.",proj:"KAIRO loops · Creator Command brain · ISG MCP server"},
+ {id:"ag",l:"Specialized agents",layer:2,kind:"agent",st:"verified",d:"Focused workers: content production, certification, measurement, ingest.",proj:"All five"},
+ {id:"mem",l:"Memory & state",layer:2,kind:"memory",st:"verified",d:"Postgres schemas, SQLite index, git-tracked distilled memory.",proj:"THE ABDUL · KAIRO Twin · ISG drafts"},
+ {id:"pol",l:"Policy & guardrails",layer:3,kind:"policy",st:"verified",d:"RBAC, typed contracts, rate limits, mock-by-default providers.",proj:"KAIRO RBAC · ISG contracts+mock"},
+ {id:"gate",l:"Human approval",layer:3,kind:"gate",st:"verified",d:"Irreversible actions require a human. Encoded structurally, not procedurally.",proj:"KAIRO gates · ISG publish_approved · CC runbook"},
+ {id:"act",l:"External actions",layer:4,kind:"action",st:"partial",d:"Publishing, payments, integrations — the highest-risk layer, partially live.",proj:"CC distribution live · ISG mocked · KAIRO offline"},
+ {id:"ev",l:"Evidence capture",layer:5,kind:"evid",st:"verified",d:"Audit logs, certification ledgers, dated reports, verification records.",proj:"CC audit.jsonl · KAIRO cert ledger · ISG job history"},
+ {id:"out",l:"Business output",layer:6,kind:"output",st:"partial",d:"Operational outcomes for a real business; external users not yet.",proj:"All five — honestly pre-revenue"}];
+const GA_EDGES=[["in","orch"],["orch","ag"],["ag","mem"],["mem","orch"],["orch","pol"],["pol","gate"],["ag","gate"],["gate","act"],["act","ev"],["ev","orch"],["act","out"]];
+
+/* ==================== UTILITIES ==================== */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const P=id=>PROJECTS.find(p=>p.id===id);
+function badge(p){return `<span class="badge ${p.maturity.cls}">${p.maturity.label}</span>`}
+
+/* ==================== FLOW DIAGRAM RENDERER ==================== */
+function renderFlow(nodes,edges,planned,opts={}){
+  const W=opts.w||760, colW=W/7, rows={}, pos={};
+  nodes.forEach(n=>{rows[n.layer]=rows[n.layer]||[];rows[n.layer].push(n)});
+  const maxRows=Math.max(...Object.values(rows).map(r=>r.length));
+  const H=Math.max(240,maxRows*74+40);
+  nodes.forEach(n=>{const col=rows[n.layer],i=col.indexOf(n);
+    pos[n.id]={x:n.layer*colW+colW/2,y:(i+1)*(H/(col.length+1))}});
+  const nw=Math.min(colW-14,104), nh=40;
+  let svg=`<svg class="flow" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label||'System workflow diagram')}">`;
+  const allE=[...edges.map(e=>({e,pl:false})),...(planned||[]).map(e=>({e,pl:true}))];
+  allE.forEach(({e:[a,b],pl})=>{const p1=pos[a],p2=pos[b];if(!p1||!p2)return;
+    const mx=(p1.x+p2.x)/2;
+    const d=`M${p1.x+nw/2-4},${p1.y} C${mx},${p1.y} ${mx},${p2.y} ${p2.x-nw/2+4},${p2.y}`;
+    svg+=`<path class="ed${pl?' planned':''}" data-a="${a}" data-b="${b}" d="${d}"/>`;
+    if(!pl&&!opts.thumb)svg+=`<path class="pulse" data-a="${a}" data-b="${b}" d="${d}"/>`});
+  nodes.forEach(n=>{const{x,y}=pos[n.id];
+    const shape=n.kind==="gate"
+      ?`<polygon points="${x-nw/2},${y} ${x},${y-nh/2-4} ${x+nw/2},${y} ${x},${y+nh/2+4}"/>`
+      :`<rect x="${x-nw/2}" y="${y-nh/2}" width="${nw}" height="${nh}" rx="${n.kind==="agent"?14:n.kind==="memory"?4:8}"/>`;
+    svg+=`<g class="nd k-${n.kind} st-${n.st}" tabindex="0" role="button" data-nid="${n.id}" aria-label="${esc(n.l)} — ${n.st}">${shape}<text x="${x}" y="${y+3.5}" text-anchor="middle">${esc(n.l.length>16?n.l.slice(0,15)+"…":n.l)}</text></g>`});
+  svg+=`</svg>`;
+  return svg;
+}
+const LEGEND=`<div class="legend">
+<span><i style="border-color:var(--dim)"></i>Input</span><span><i style="border-color:var(--blue)"></i>Orchestrator</span>
+<span><i style="border-color:var(--pale);border-radius:8px"></i>Agent</span><span><i style="border-color:var(--info)"></i>Memory</span>
+<span><i style="border-color:var(--warn)"></i>Policy</span><span><i style="border-color:var(--warn);transform:rotate(45deg)"></i>Human gate</span>
+<span><i style="border-color:var(--blue2)"></i>Action</span><span><i style="border-color:var(--ok)"></i>Evidence</span>
+<span><i style="border-color:var(--dimr);border-style:dashed"></i>Planned path (dashed)</span></div>`;
+/* Honest storytelling layer: pattern-level narrative per node kind — never invented facts. */
+const KIND_STORY={
+ input:"Every system begins with reality: signals, state, requests. Nothing downstream is smarter than what enters here.",
+ orch:"The conductor. One reasoning layer owns the loop so responsibility is never diffuse — when something goes wrong, there is one place to ask why.",
+ agent:"A specialist with one job. Narrow scope is the point: small agents are testable, replaceable, and honest about what they can't do.",
+ memory:"What the system remembers between runs. Without memory, every decision starts from zero; with it, judgment compounds.",
+ policy:"The rules that hold even when the model is confident. Guardrails are written before they're needed, not after.",
+ gate:"This is where autonomy stops. A human looks, decides, and owns the consequence — by design, not as a fallback.",
+ action:"The moment the system touches the real world. The riskiest layer, which is why everything before it exists.",
+ evid:"The system's testimony about itself. If it isn't logged, it didn't happen — and can't be trusted or improved.",
+ output:"What the business actually gets. Everything upstream is overhead until this line moves."};
+const ST_LABEL={verified:["Verified","var(--ok)"],partial:["Partially working","var(--warn)"],arch:["Architecture only","var(--info)"],planned:["Planned","var(--dimr)"],dormant:["Dormant","var(--gray)"]};
+function wireFlow(container,nodes,inspEl,extra){
+  const box=container.closest(".mapbox")||container.parentElement;
+  const hotOn=(id,on)=>container.querySelectorAll(".ed,.pulse").forEach(e=>{if(e.dataset.a===id||e.dataset.b===id)e.classList.toggle("hot",on)});
+  container.querySelectorAll(".nd").forEach(g=>{
+    const nid=g.dataset.nid;
+    g.addEventListener("mouseenter",()=>hotOn(nid,true));
+    g.addEventListener("mouseleave",()=>{if(!g.classList.contains("sel"))hotOn(nid,false)});
+    g.addEventListener("focus",()=>hotOn(nid,true));
+    g.addEventListener("blur",()=>{if(!g.classList.contains("sel"))hotOn(nid,false)});
+    const open=()=>{const n=nodes.find(x=>x.id===nid);if(!n)return;
+      container.querySelectorAll(".nd").forEach(x=>x.classList.remove("sel"));g.classList.add("sel");
+      container.querySelectorAll(".ed.hot,.pulse.hot").forEach(e=>e.classList.remove("hot"));hotOn(nid,true);
+      box.querySelectorAll(".npop").forEach(p=>p.remove());
+      const[stTxt,stCol]=ST_LABEL[n.st]||ST_LABEL.arch;
+      const pop=document.createElement("div");pop.className="npop";pop.setAttribute("role","dialog");pop.setAttribute("aria-label",n.l);
+      pop.innerHTML=`<button class="xx" aria-label="Close">✕</button>
+        <h4>${esc(n.l)}<span class="stchip" style="color:${stCol};border:1px solid ${stCol}">${stTxt}</span></h4>
+        <div class="row"><b>What happens here</b><br>${esc(n.d)}</div>
+        <div class="row"><b>Why it matters</b><br>${esc(KIND_STORY[n.kind]||"")}</div>
+        ${n.proj?`<div class="row"><b>Where it lives</b><br>${esc(n.proj)}</div>`:""}
+        ${extra?extra(n):""}`;
+      box.appendChild(pop);
+      // position near the node, clamped inside the box (desktop only; CSS makes it static on mobile)
+      if(getComputedStyle(pop).position==="absolute"){
+        const gb=g.getBoundingClientRect(),bb=box.getBoundingClientRect();
+        let x=gb.left-bb.left+gb.width/2-150, y=gb.bottom-bb.top+10;
+        x=Math.max(8,Math.min(x,bb.width-pop.offsetWidth-8));
+        if(y+pop.offsetHeight>bb.height-8)y=Math.max(8,gb.top-bb.top-pop.offsetHeight-10);
+        pop.style.left=x+"px";pop.style.top=y+"px";
+      }
+      const close=()=>{pop.remove();g.classList.remove("sel");hotOn(nid,false);g.focus()};
+      pop.querySelector(".xx").addEventListener("click",close);
+      pop.addEventListener("keydown",e=>{if(e.key==="Escape"){e.stopPropagation();close()}});
+      pop.querySelector(".xx").focus();
+      // keep the a11y live-region inspector in sync when present
+      if(inspEl){inspEl.classList.add("open","sroff");inspEl.innerHTML=`<h4>${esc(n.l)}</h4><div class="row"><b>Status</b> — ${stTxt}</div><div class="row">${esc(n.d)}</div>`;}
+    };
+    g.addEventListener("click",open);
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}});
+  });
+}
+
+/* ==================== ROUTES ==================== */
+const routes={};
+routes["/"]=()=>`
+<section class="hero2">
+  <div>
+    <div class="kick">Evidence snapshot audited August 22, 2026</div>
+    <h1>AI systems you can <span class="grad">actually inspect.</span></h1>
+    <p class="lede">I design agent systems — governed autonomy with human approval gates — and direct AI to build them. This portfolio is an observatory: open any system, see how it thinks, and check the evidence behind every claim.</p>
+    <div class="prf" data-grade="verified">
+      <div><span class="tick">✓</span><b>289 tests passing</b> — reproduced independently in a clean copy <span class="src">· pnpm test (ISG)</span></div>
+      <div><span class="tick">✓</span><b>An autonomous operator running live</b> — audit log written the morning of the audit <span class="src">· stat audit.jsonl → 2026-08-22 07:30</span></div>
+      <div><span class="tick">✓</span><b>1,158 commits on the flagship platform</b> — with tool certification by named failure mode <span class="src">· git rev-list --count</span></div>
+    </div>
+    <div class="disc"><b>How I build, honestly:</b> this portfolio represents AI-assisted product development. AI generated much of the implementation. I own the problem framing, product direction, workflow architecture, constraints, orchestration, evaluation, and iteration.</div>
+    <div class="ctarow"><a class="btn btn-p" href="#/work">Explore the systems</a><button class="btn btn-g" id="ctaEv">Inspect the evidence</button><a class="btn btn-g" href="#/resume">View résumé →</a></div>
+  </div>
+  <div>
+    <div class="vidside" data-vid="https://d2ol7oe51mr4n9.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/6dfa73f9-64eb-41a0-9c7c-e0b6cd6038be.mp4" style="max-width:340px;margin:0 auto var(--s3);aspect-ratio:9/16;border-radius:var(--r3);box-shadow:var(--sh2)">
+      <span class="lbl">AI-generated welcome — my real photo, generated voice</span>
+      <video data-av muted loop playsinline preload="metadata" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/6dfa73f9-64eb-41a0-9c7c-e0b6cd6038be.mp4#t=0.5" aria-label="Thirty-second welcome from Abdelrahman"></video>
+      <button class="expand" aria-label="Play welcome video with sound">🔊 Play with sound</button>
+    </div>
+    <div class="mapbox">
+      <h3>Governed Autonomy — the pattern behind every system</h3>
+      <div id="gaFlow">${renderFlow(GA_NODES,GA_EDGES,[],{label:"Governed autonomy pattern map"})}</div>
+      ${LEGEND}
+      <div class="insp" id="gaInsp" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+<section class="blk">
+  <span class="stag">Evidence strip</span><h2>The numbers, with their receipts</h2>
+  <p class="ssub">Click any metric for its source command, scope, and what it does — and does not — prove.</p>
+  <div class="mstrip" id="mstrip">${METRICS.map((m,i)=>`
+    <button class="met" data-mi="${i}" data-grade="${i===4?'partial':'verified'}" aria-label="${m.disp} ${esc(m.label)} — open evidence">
+      <div class="n" data-count="${m.v}" data-disp="${esc(m.disp)}">${reduced?m.disp:"0"}</div>
+      <div class="l">${esc(m.label)}</div>
+      <div class="g"><span class="src">${esc(m.cmd.split("→")[0].slice(0,34))}…</span><span class="badge ${i===4?'b-proto':'b-verified'}" style="font-size:.56rem">${i===4?"attested":"verified"}</span></div>
+    </button>`).join("")}
+  </div>
+  <div class="charts">
+    <div class="chart"><h4>Projects by maturity (audited)</h4>
+      ${[["Running live",1,"var(--ok)"],["Verified codebase",2,"var(--blue)"],["Prototype",2,"var(--warn)"],["Lab / architecture",4,"var(--info)"],["Dormant",1,"var(--gray)"]].map(([l,v,c])=>`
+      <div class="hbar"><span>${l}</span><div class="tr"><div class="fl" style="width:${v*20}%;background:${c}"></div></div><span>${v}</span></div>`).join("")}
+      <p class="src" style="margin-top:8px">Source: 02_PROJECT_RANKING.md, audit 2026-08-22</p></div>
+    <div class="chart"><h4>Verified test files / results by project</h4>
+      ${[["ISG — passing tests",289,"var(--ok)"],["KAIRO — test files",76,"var(--blue)"],["Creator Command — ops scripts",20,"var(--warn)"],["Others — none",0,"var(--gray)"]].map(([l,v,c])=>`
+      <div class="hbar"><span>${l}</span><div class="tr"><div class="fl" style="width:${Math.min(100,v/2.9)}%;background:${c}"></div></div><span>${v}</span></div>`).join("")}
+      <p class="src" style="margin-top:8px">ISG reproduced; KAIRO/CC counted, not re-executed</p></div>
+  </div>
+</section>
+<section class="blk">
+  <span class="stag">Flagships</span><h2>Five systems, five honest badges</h2>
+  <div class="pgrid" style="margin-top:var(--s3)">${PROJECTS.map(p=>miniCard(p)).join("")}</div>
+</section>`;
+
+function miniCard(p){const hasVid=!!p.video;return `
+ <article class="pcard sz-${p.size}${hasVid?" has-vid":""} reveal" data-grade="${p.maturity.grade}" style="--ac:${p.accent}">
+  <div class="ptext">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h3>${esc(p.name)}</h3>${badge(p)}</div>
+    <p class="p1">${esc(p.problem)}</p>
+    <p class="diff">◆ ${esc(p.diff)}</p>
+    <div class="proof" style="margin-top:4px"><b>Strongest proof:</b> ${esc(p.verified[0])}</div>
+    <div class="limits" style="margin-top:4px"><b>Key limitation:</b> ${esc(p.limitations[0])}</div>
+    <div class="rowx">
+      <a class="btn btn-g" style="padding:.5rem 1rem;font-size:.8rem" href="#/project/${p.id}">Open system →</a>
+      <label class="cmp"><input type="checkbox" data-cmp="${p.id}" ${cmpSel.includes(p.id)?"checked":""} aria-label="Select ${esc(p.name)} for comparison">Compare</label>
+    </div>
+  </div>
+  ${hasVid?`<div class="vidside" data-vid="${esc(p.video)}">
+    <span class="lbl">Concept visualization — AI-generated</span>
+    <video data-av muted loop playsinline preload="metadata" src="${esc(p.video)}#t=0.5" aria-label="Concept visualization for ${esc(p.name)}"></video>
+    <button class="expand" aria-label="Expand concept video for ${esc(p.name)}">⤢ Expand</button>
+  </div>`:""}
+ </article>`}
+
+/* ---------- WORK ---------- */
+let workView="portfolio", workFilter="all", workSort="strength";
+const STRENGTH={kairo:82,"isg":81,"creator-command":78,"the-abdul":68,"ella":61};
+routes["/work"]=()=>{
+  let list=PROJECTS.filter(p=>{
+    if(workFilter==="all")return true;
+    if(workFilter==="running")return p.maturity.cls==="b-live";
+    if(workFilter==="verified")return p.maturity.cls==="b-verified";
+    if(workFilter==="proto")return p.maturity.cls==="b-proto";
+    if(workFilter==="tests")return p.id==="isg"||p.id==="kairo";
+    if(workFilter==="video")return !!p.video;
+    if(workFilter==="repair")return p.limitations.some(l=>/offline|failing|corrupt/i.test(l));
+    return true;});
+  list=[...list].sort((a,b)=>workSort==="alpha"?a.name.localeCompare(b.name):(STRENGTH[b.id]||0)-(STRENGTH[a.id]||0));
+  const inner = workView==="portfolio"
+    ? (list.length?`<div class="pgrid">${list.map(p=>miniCard(p)).join("")}</div>`:`<div class="empty">No systems match this filter. <button class="fbtn" onclick="workFilter='all';render()">Reset filters</button></div>`)
+    : workView==="systems" ? systemsLandscape(list)
+    : evidenceTable(list);
+  return `
+  <section class="blk">
+    <span class="stag">Project portfolio</span><h2>The work, three ways</h2>
+    <p class="ssub">Portfolio view for the story, Systems view for the shared architecture, Evidence view for the audit table.</p>
+    <div class="viewtabs" role="tablist" aria-label="Work views">
+      ${[["portfolio","Portfolio"],["systems","Systems"],["evidence","Evidence"]].map(([v,l])=>`<button class="vt" role="tab" aria-selected="${workView===v}" data-wv="${v}">${l}</button>`).join("")}
+    </div>
+    <div class="filters">
+      <label class="src" for="wf">Filter</label>
+      <select id="wf" aria-label="Filter projects">
+        ${[["all","All"],["running","Running"],["verified","Verified codebase"],["proto","Prototype"],["tests","Has verified tests"],["video","Has concept video"],["repair","Needs repair"]].map(([v,l])=>`<option value="${v}" ${workFilter===v?"selected":""}>${l}</option>`).join("")}
+      </select>
+      <label class="src" for="ws">Sort</label>
+      <select id="ws" aria-label="Sort projects">
+        <option value="strength" ${workSort==="strength"?"selected":""}>Portfolio strength</option>
+        <option value="alpha" ${workSort==="alpha"?"selected":""}>Alphabetical</option>
+      </select>
+    </div>
+    ${inner}
+  </section>`;
+};
+function systemsLandscape(list){
+  const caps=[["Orchestration",["kairo","creator-command","isg"]],["Memory / state",["the-abdul","kairo","isg"]],["Content generation",["creator-command","isg","ella"]],["Human approval",["kairo","isg","creator-command"]],["Automation / scheduling",["creator-command","isg"]],["Evidence capture",["kairo","creator-command","isg"]],["Publishing",["creator-command","isg"]],["Business operations",["kairo","ella"]]];
+  return `<div class="atlas">${caps.map(([c,ids])=>`
+    <div class="alayer"><div class="ln">${c}</div><div class="acells">
+      ${ids.filter(id=>list.some(p=>p.id===id)).map(id=>{const p=P(id);return `<a class="acell" data-st="${p.maturity.grade==='verified'?'verified':'partial'}" href="#/project/${id}" style="text-decoration:none">${esc(p.name)}</a>`}).join("")||'<span class="src">—</span>'}
+    </div></div>`).join("")}
+  <p class="src" style="margin-top:10px">Connections derived from audited project relationships (e.g. Creator Command consults THE ABDUL; ISG and KAIRO share the approval-gate pattern).</p></div>`;
+}
+function evidenceTable(list){
+  if(!list.length)return `<div class="empty">No systems match this filter.</div>`;
+  return `<div class="tblwrap"><table class="evtable"><thead><tr><th>System</th><th>Maturity</th><th>Build</th><th>Tests</th><th>Deployment</th><th>Freshness</th><th>Known blocker</th><th>Case study</th></tr></thead><tbody>
+  ${list.map(p=>{const row={
+    kairo:["CI present (not re-run)","76 files (not re-run)","Offline — HTTP 402","2026-08-11 commit","Vercel billing","yes"],
+    "creator-command":["ops build .next 2026-08-20","20+ ops scripts","Live on launchd","2026-08-22 log","YouTube token","yes"],
+    isg:["✓ green, reproduced","✓ 289 pass","Local only (by design)","2026-08-22 commit","Postgres for 65 int. tests","yes"],
+    "the-abdul":["n/a (Python scripts)","none","Local service","2026-08-22 db write","No auth/tests","yes"],
+    ella:["not re-run","none","Offline (was Vercel)","2026-07-29 tree","Repo consolidation","yes"]}[p.id];
+   return `<tr><td><a href="#/project/${p.id}">${esc(p.name)}</a></td><td>${badge(p)}</td><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td></tr>`}).join("")}
+  </tbody></table></div>`;
+}
+
+/* ---------- COMPARE ---------- */
+let cmpSel=[];
+routes["/compare"]=()=>{
+  const sel=cmpSel.map(P).filter(Boolean);
+  if(sel.length<2)return `<section class="blk"><span class="stag">Compare</span><h2>Select 2–3 systems to compare</h2><p class="ssub">Use the Compare checkboxes on <a href="#/work">the Work page</a>.</p></section>`;
+  const rows=[["Problem",p=>p.problem],["Intended user",p=>p.user],["Maturity",p=>p.maturity.label],["Verified functionality",p=>p.verified.slice(0,3).join(" · ")],["AI's role",p=>p.ai],["Abdelrahman's role",p=>p.role],["Human approval model",p=>({kairo:"RBAC'd gates on irreversible loop actions",'creator-command':"Operator approval per runbook",isg:"Structural: publish exists only as publish_approved","the-abdul":"Human-only consumer + curated demos",ella:"Admin auth guard"}[p.id])],["Key limitation",p=>p.limitations[0]],["Technology",p=>p.tech.join(", ")],["Next milestone",p=>p.next.milestone]];
+  return `<section class="blk"><span class="stag">Compare mode</span><h2>${sel.map(p=>esc(p.name)).join(" vs ")}</h2>
+  <div class="cmp-grid"><table><thead><tr><th></th>${sel.map(p=>`<th>${esc(p.name)}<br>${badge(p)}</th>`).join("")}</tr></thead><tbody>
+  ${rows.map(([l,f])=>`<tr><td>${l}</td>${sel.map(p=>`<td>${esc(f(p)||"—")}</td>`).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  <p class="src" style="margin-top:10px">All cells drawn from the audited data model — no generated rankings.</p></section>`;
+};
+
+/* ---------- PROJECT PAGES ---------- */
+let projTab={};
+routes["/project"]=(id)=>{
+  const p=P(id); if(!p)return `<section class="blk"><h2>Unknown system</h2><p class="ssub"><a href="#/work">Back to Work</a></p></section>`;
+  const tab=projTab[id]||"overview";
+  document.documentElement.style.setProperty("--ac",p.accent);
+  const tabs=[["overview","Overview"],["system","System"],["proof","Proof"],["decisions","Decisions"],["roadmap","Roadmap"]];
+  let body="";
+  if(tab==="overview")body=`
+    <div class="ovwrap">
+      <div class="ovtext">
+        <div class="ovcell"><h4>Problem</h4><p>${esc(p.problem)}</p></div>
+        <div class="ovcell"><h4>Intended user</h4><p>${esc(p.user)}</p></div>
+        <div class="ovcell"><h4>What is built</h4><ul>${p.verified.map(v=>`<li>${esc(v)}</li>`).join("")}</ul></div>
+        <div class="ovcell"><h4>What is not built / not proven</h4><ul>${p.limitations.map(v=>`<li>${esc(v)}</li>`).join("")}</ul></div>
+        <div class="ovcell"><h4>My role (the judgment layer)</h4><p>${esc(p.role)}</p></div>
+        <div class="ovcell"><h4>AI's role</h4><p>${esc(p.ai)}</p></div>
+        <div class="filters">${p.tech.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>
+      </div>
+      ${p.video?`<div class="ovstick"><div class="vidside" data-vid="${esc(p.video)}" style="aspect-ratio:16/10">
+        <span class="lbl">Concept visualization — AI-generated, not product footage</span>
+        <video data-av muted loop playsinline preload="metadata" src="${esc(p.video)}#t=0.5" aria-label="Concept visualization for ${esc(p.name)}"></video>
+        <button class="expand" aria-label="Expand concept video for ${esc(p.name)}">⤢ Expand</button>
+      </div><p class="src" style="margin-top:8px">The video plays beside the text so you can read and watch together. Expand for full size + sound controls.</p></div>`:""}
+    </div>`;
+  if(tab==="system")body=`
+    <div class="mapbox" style="margin-top:var(--s3)">
+      <h3>${esc(p.name)} — system topology <span class="src">(dashed = planned; click a node to inspect)</span></h3>
+      <div id="pFlow">${renderFlow(p.wf.nodes,p.wf.edges,p.wf.planned,{label:p.name+" system topology"})}</div>
+      ${LEGEND}<div class="insp" id="pInsp" aria-live="polite"></div>
+    </div>
+    <p class="src" style="margin-top:10px">Architecture visualization — implementation status shown per node and in Evidence Mode. Not live telemetry.</p>`;
+  if(tab==="proof")body=`
+    ${p.evidence.map(e=>`
+      <div class="proof" data-grade="${/VERIFIED/.test(e.result)?'verified':'partial'}"><b>${esc(e.claim)}</b> — ${esc(e.result)}
+        <details class="vrec"><summary>View verification record</summary><div class="body"><b>type:</b> ${esc(e.type)}
+<b>source:</b> ${esc(e.src)}
+<b>verified:</b> ${AUDIT_DATE}
+<b>proves:</b> ${esc(e.proves)}
+<b>does not prove:</b> ${esc(e.not)}</div></details>
+      </div>
+      <div class="limits"><b>Scope limit:</b> ${esc(e.not)}</div>`).join("")}
+    <p class="src" style="margin-top:12px">Proof never appears without its limitation. Full registry: <a href="#/evidence">Evidence</a>.</p>`;
+  if(tab==="decisions")body=`
+    <div class="ovgrid">${p.decisions.map((d,i)=>`<div class="ovcell"><h4>Decision ${i+1}</h4><p>${esc(d)}</p></div>`).join("")}</div>`;
+  if(tab==="roadmap")body=`
+    <div class="ovgrid">
+      <div class="ovcell"><h4>Next milestone</h4><p>${esc(p.next.milestone)}</p></div>
+      <div class="ovcell"><h4>Blockers</h4><ul>${p.next.blockers.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>
+      <div class="ovcell"><h4>Acceptance criteria</h4><p>${esc(p.next.accept)}</p></div>
+      <div class="ovcell"><h4>Before "production-ready" may be claimed</h4><p>External users completing the core journey, monitored uptime, and green re-runs of the full test surface. None of these are claimed today.</p></div>
+    </div>`;
+  return `
+  <div class="crumbs"><a href="#/">Dashboard</a> / <a href="#/work">Work</a> / ${esc(p.name)}</div>
+  <div class="phead"><div class="toprow"><h1 style="font-size:clamp(1.6rem,3.4vw,2.4rem)">${esc(p.name)}</h1>${badge(p)}<span class="src">audited ${AUDIT_DATE}</span></div><p>${esc(p.short)}</p></div>
+  <div class="ptabs"><div class="tabs" role="tablist" aria-label="${esc(p.name)} sections">
+    ${tabs.map(([t,l])=>`<button class="tab" role="tab" aria-selected="${tab===t}" data-pt="${t}" data-pid="${id}">${l}</button>`).join("")}
+  </div></div>
+  <section class="blk" style="padding-top:var(--s3)">${body}</section>`;
+};
+function mediaBox(p){return `
+  <div class="medbox" data-vid="${esc(p.video)}">
+    <span class="lbl">Concept visualization — AI-generated, not product footage</span>
+    <video preload="metadata" muted playsinline src="${esc(p.video)}#t=0.5"></video>
+    <button class="play" aria-label="Play concept video for ${esc(p.name)}"><i>▶</i></button>
+  </div>`}
+
+/* ---------- SYSTEMS ATLAS ---------- */
+let atlasProj="all", atlasSt="all";
+routes["/systems"]=()=>{
+  const layers=[["Business problem","in"],["Inputs & signals","in"],["Context & memory","mem"],["Planner / orchestrator","orch"],["Specialized agents","ag"],["Rules & guardrails","pol"],["Human approval","gate"],["Execution tools","act"],["Evidence & audit trail","ev"],["Business output","out"]];
+  const cells=[];
+  PROJECTS.forEach(p=>p.wf.nodes.forEach(n=>{
+    const map={input:1,memory:2,orch:3,agent:4,policy:5,gate:6,action:7,evid:8,output:9};
+    cells.push({layer:map[n.kind]??1,p:p.id,pname:p.name,n});
+  }));
+  return `
+  <section class="blk">
+    <span class="stag">Signature feature</span><h2>Systems Atlas</h2>
+    <p class="ssub">The repeated architecture across all five systems, layer by layer. Every cell is a real audited component — click to inspect its evidence and limitation.</p>
+    <div class="filters">
+      <select id="atP" aria-label="Filter by system"><option value="all">All systems</option>${PROJECTS.map(p=>`<option value="${p.id}" ${atlasProj===p.id?"selected":""}>${esc(p.name)}</option>`).join("")}</select>
+      <select id="atS" aria-label="Filter by status"><option value="all">All statuses</option>${[["verified","Verified"],["partial","Partial"],["arch","Architecture"],["planned","Planned"]].map(([v,l])=>`<option value="${v}" ${atlasSt===v?"selected":""}>${l}</option>`).join("")}</select>
+    </div>
+    <div class="atlas">
+      ${layers.map((L,li)=>`<div class="alayer"><div class="ln">${L[0]}</div><div class="acells">
+        ${cells.filter(c=>c.layer===li).map(c=>{
+          const hide=(atlasProj!=="all"&&c.p!==atlasProj)||(atlasSt!=="all"&&c.n.st!==atlasSt);
+          return `<button class="acell${hide?" hide":""}" data-st="${c.n.st==='verified'?'verified':c.n.st==='partial'?'partial':'arch'}" data-ap="${c.p}" data-anid="${c.n.id}">${esc(c.n.l)} <span class="src">· ${esc(c.pname.split(" ")[0])}</span></button>`}).join("")||'<span class="src">—</span>'}
+      </div></div>`).join("")}
+    </div>
+    <div class="insp" id="atInsp" aria-live="polite" style="margin-top:var(--s2)"></div>
+    <h2 style="margin-top:var(--s5)">How I design AI systems</h2>
+    <div class="guided">
+      <div>Define the business outcome — never start from the model.</div>
+      <div>Decompose the workflow into loop-shaped stages.</div>
+      <div>Assign specialized intelligence per stage (primary brain + specialists).</div>
+      <div>Add policy and human gates on everything irreversible.</div>
+      <div>Execute through typed tools, mock-by-default.</div>
+      <div>Capture evidence — the system writes its own audit trail.</div>
+      <div>Measure, certify, and iterate — named failure modes over optimism.</div>
+    </div>
+  </section>`;
+};
+
+/* ---------- EVIDENCE REGISTRY ---------- */
+let evP="all",evS="all";
+routes["/evidence"]=()=>{
+  let entries=[];
+  PROJECTS.forEach(p=>p.evidence.forEach(e=>entries.push({p:p.id,pn:p.name,...e})));
+  entries=entries.filter(e=>(evP==="all"||e.p===evP)&&(evS==="all"||(evS==="verified"?/VERIFIED/.test(e.result):!/^VERIFIED/.test(e.result))));
+  return `
+  <section class="blk">
+    <span class="stag">Evidence registry</span><h2>Every claim, with its receipt</h2>
+    <p class="ssub">The audit ledger behind the portfolio. Local-only evidence is labeled; no credentials or personal data appear here.</p>
+    <div class="filters">
+      <select id="evPf" aria-label="Filter by project"><option value="all">All projects</option>${PROJECTS.map(p=>`<option value="${p.id}" ${evP===p.id?"selected":""}>${esc(p.name)}</option>`).join("")}</select>
+      <select id="evSf" aria-label="Filter by status"><option value="all">All statuses</option><option value="verified" ${evS==="verified"?"selected":""}>Verified</option><option value="other" ${evS==="other"?"selected":""}>Downgraded / env-blocked</option></select>
+    </div>
+    ${entries.length?entries.map(e=>`
+    <div class="panel" style="padding:var(--s2) var(--s3);margin-bottom:12px" data-grade="${/VERIFIED/.test(e.result)?'verified':'partial'}">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b style="color:var(--txt)">${esc(e.claim)}</b><span class="badge ${/VERIFIED/.test(e.result)?'b-verified':'b-proto'}">${esc(e.result)}</span></div>
+      <div class="src" style="margin-top:4px">${esc(e.pn)} · ${esc(e.type)} · verified ${AUDIT_DATE} · local evidence</div>
+      <details class="vrec"><summary>Command / source record</summary><div class="body">${esc(e.src)}
+<b>proves:</b> ${esc(e.proves)}
+<b>does not prove:</b> ${esc(e.not)}</div></details>
+      <button class="fbtn copy" data-copy="${esc(e.src)}" style="margin-top:8px">Copy record</button>
+    </div>`).join(""):`<div class="empty">No evidence entries match.</div>`}
+  </section>`;
+};
+
+/* ---------- LAB ---------- */
+let labTag="all";
+routes["/lab"]=()=>{
+  const tags=[["all","All"],["automation","Automation"],["content","Content"],["architecture","Architecture"],["video","Video"],["business","Business systems"]];
+  const list=LAB.filter(l=>labTag==="all"||l.tag===labTag);
+  return `
+  <section class="blk">
+    <span class="stag">Experiment lab</span><h2>The experimentation registry</h2>
+    <p class="ssub">Smaller builds, honest states, and — most importantly — why each one was not promoted to a flagship.</p>
+    <div class="filters">${tags.map(([v,l])=>`<button class="fbtn" aria-pressed="${labTag===v}" data-lt="${v}">${l}</button>`).join("")}</div>
+    <div class="labgrid">
+      ${list.map((l,i)=>`
+      <div class="labc" data-grade="${l.badge==='b-live'?'verified':l.badge==='b-verified'?'verified':l.badge==='b-dormant'?'dormant':'arch'}">
+        <span class="badge ${l.badge}">${esc(l.state)}</span>
+        <h3>${esc(l.n)}</h3>
+        <p><b style="color:var(--pale)">Hypothesis:</b> ${esc(l.hyp)}</p>
+        <button class="exp" data-le="${i}" aria-expanded="false">Details ↓</button>
+        <div class="more">
+          <p><b style="color:var(--pale)">What exists:</b> ${esc(l.exists)}</p>
+          <p style="margin-top:6px"><b style="color:var(--pale)">Evidence:</b> ${esc(l.ev)}</p>
+          <p style="margin-top:6px"><b style="color:var(--pale)">Lesson:</b> ${esc(l.lesson)}</p>
+          <p style="margin-top:6px"><b style="color:var(--pale)">Why not a flagship:</b> ${esc(l.why)}</p>
+          ${l.video?`<div class="medbox" data-vid="${esc(l.video)}" style="margin-top:10px"><span class="lbl">Concept visualization — AI-generated</span><video preload="metadata" muted playsinline src="${esc(l.video)}#t=0.5"></video><button class="play" aria-label="Play concept video"><i>▶</i></button></div>`:""}
+        </div>
+      </div>`).join("")}
+    </div>
+  </section>`;
+};
+
+/* ---------- SKILLS ---------- */
+let skillsBy="skill";
+routes["/skills"]=()=>{
+  const cols=[...PROJECTS.map(p=>({id:p.id,n:p.name.split(" ")[0]})),{id:"lab",n:"Lab"}];
+  const labSkills={"AI product strategy":"em","Workflow architecture":"de","Agent orchestration":"na","Prompt & context design":"vs","Governed automation":"de","Human-in-the-loop systems":"na","Product requirements":"em","Evaluation & QA":"na","Rapid AI prototyping":"de","UX direction":"em","Technical documentation":"de","Business-model thinking":"em","Integration planning":"na","Testing & debugging":"na","Production operations":"na","ML engineering":"ne","Hand-coded engineering":"ne"};
+  const cell=(pid,row)=>{const r=pid==="lab"?(labSkills[row]||"na"):(P(pid).skills[row]||"na");
+    return `<td><button class="cellr ${r}" data-sk="${esc(row)}" data-sp="${pid}" ${r==="na"?"tabindex=-1":""}>${RATING_LABEL[r]}</button></td>`};
+  return `
+  <section class="blk">
+    <span class="stag">Skills evidence matrix</span><h2>Rated by evidence, not by claim</h2>
+    <p class="ssub">Every cell traces to audited project evidence. Click a rated cell for the supporting evidence and its limitation.</p>
+    <div class="viewtabs"><button class="vt" aria-selected="${skillsBy==='skill'}" data-sb="skill">View by skill</button><button class="vt" aria-selected="${skillsBy==='project'}" data-sb="project">View by project</button></div>
+    <div class="tblwrap">
+    ${skillsBy==="skill"
+      ?`<table class="mtx"><thead><tr><th>Skill</th>${cols.map(c=>`<th>${esc(c.n)}</th>`).join("")}</tr></thead><tbody>
+        ${SKILL_ROWS.map(row=>`<tr><td>${esc(row)}</td>${cols.map(c=>cell(c.id,row)).join("")}</tr>`).join("")}</tbody></table>`
+      :`<table class="mtx"><thead><tr><th>Project</th>${SKILL_ROWS.slice(0,9).map(r=>`<th>${esc(r)}</th>`).join("")}</tr></thead><tbody>
+        ${cols.map(c=>`<tr><td>${esc(c.n)}</td>${SKILL_ROWS.slice(0,9).map(row=>cell(c.id,row)).join("")}</tr>`).join("")}</tbody></table><p class="src">Project view shows the first 9 skills; switch to skill view for the full 17.</p>`}
+    </div>
+    <div class="insp" id="skInsp" aria-live="polite" style="margin-top:var(--s2)"></div>
+    <div class="tierbands">
+      <div class="tb" style="border-left:3px solid var(--ok)"><h3 style="color:var(--ok)">Verified strong</h3><p>AI workflow architecture · agent orchestration · prompt &amp; context engineering · human-in-the-loop design · scheduled automation · AI-assisted shipping speed · technical documentation</p></div>
+      <div class="tb" style="border-left:3px solid var(--blue)"><h3 style="color:var(--blue)">Demonstrated</h3><p>Evaluation &amp; QA design · product specs &amp; honest valuation · Postgres/Supabase schema design · MCP server design · design systems · multi-machine infrastructure · business-model thinking</p></div>
+      <div class="tb" style="border-left:3px solid var(--warn)"><h3 style="color:var(--warn)">Emerging</h3><p>Security hygiene · testing depth · deployment/DevOps · production operations</p></div>
+      <div class="tb" style="border-left:3px solid var(--gray)"><h3 style="color:var(--gray)">Not claimed — deliberately</h3><p>ML engineering · hand-coded senior software engineering · production operations at scale. No evidence exists for these yet, so they are not on this site. This section is a trust feature, not a disclaimer.</p></div>
+    </div>
+  </section>`;
+};
+const SKILL_EV={
+ "Workflow architecture":"KAIRO governed loops (approval gates in code) · Creator Command full loop running live · ISG contract-first monorepo. Limit: single-operator scale only.",
+ "Agent orchestration":"Primary-brain + advisory-specialists pattern in Creator Command config · THE ABDUL consulted as a service · 10 launchd agents. Limit: Claude-Code-centric.",
+ "Prompt & context design":"NoCap 25-skill pack · KAIRO design corpus (20+ checksummed parts) · THE ABDUL layered instruction files. Limit: no formal prompt-variant evals.",
+ "Governed automation":"ISG mock-by-default + structural approval · KAIRO RBAC gates · CC failure-aware scheduling. Limit: live external-action layer only partially exercised.",
+ "Evaluation & QA":"KAIRO certification with named failure modes (56/41/~432 ledger) · ISG 289 reproduced tests. Limit: KAIRO suites not re-executed this audit.",
+ "Testing & debugging":"ISG suite green under cold reproduction · CC triaged from its own logs. Limit: no CI history evidence.",
+ "Production operations":"launchd fleet + always-on mini server. Limit: no cloud ops, deployment currently offline — rated Emerging, not claimed.",
+ "ML engineering":"No evidence anywhere in the audit — not claimed.",
+ "Hand-coded engineering":"AI generated implementation under direction — not claimed. This is the honest boundary of the profile."};
+
+/* ---------- ABOUT ---------- */
+routes["/about"]=()=>`
+<section class="blk">
+  <span class="stag">About &amp; method</span><h2>Operator first. Builder by necessity.</h2>
+  <div class="ovgrid" style="margin-top:var(--s3)">
+    <div class="ovcell"><h4>Positioning</h4><p><b style="color:var(--txt)">AI Workflow Systems Designer.</b> I design agent systems — the workflow, the approval gates, the evaluation loop — and direct AI to build them. Supporting labels: AI Automation Consultant (Claude + n8n) · AI-Assisted Product Builder.</p></div>
+    <div class="ovcell"><h4>How I work with AI</h4><p>AI writes most of the code. I choose the problems, write the requirements, design the architecture, set the gates and the evaluation criteria, review the output, reject what isn't good enough, and iterate. AI is the execution multiplier; the judgment layer is mine.</p></div>
+    <div class="ovcell"><h4>Governed autonomy</h4><p>The philosophy behind every system here: software that acts on its own inside boundaries a human sets, logs what it does, and stops where judgment belongs to a person. See it as a pattern on the <a href="#/systems">Systems Atlas</a>.</p></div>
+    <div class="ovcell"><h4>Evidence first</h4><p>Every claim on this site is graded, sourced, and paired with its limitation. What I can't prove, I don't claim — the <a href="#/skills">Not Claimed</a> list is public on purpose.</p></div>
+    <div class="ovcell"><h4>What I don't claim</h4><p>ML engineering. Hand-coded senior software engineering. Production operations at scale. Users or revenue that don't exist. Growth caused by systems that didn't cause it.</p></div>
+    <div class="ovcell"><h4>Journey &amp; focus</h4><p>Port Said → Kent → Cairo → Los Angeles → New York City. Current focus: AI workflow consulting engagements (Claude + n8n agent systems) and AI operations / enablement roles.</p></div>
+  </div>
+  <h2 style="margin-top:var(--s5)">The judgment layer</h2>
+  <p class="ssub">What remains human in AI-assisted development — the part I'm accountable for on every project.</p>
+  <div class="jl">${["Problem selection","Product direction","Constraints","Architecture","Orchestration","Evaluation","Iteration"].map(x=>`<div>${x}</div>`).join("")}</div>
+  <div class="ctarow" style="margin-top:var(--s4)">
+    <a class="btn btn-p" href="mailto:lfestberg@gmail.com">Contact</a>
+    <a class="btn btn-g" href="#/resume">View résumé</a>
+  </div>
+</section>`;
+
+/* ---------- RESUME ---------- */
+routes["/resume"]=()=>`
+<div class="viewbar no-print">
+  <button class="vbtn" onclick="if(history.length>1){history.back()}else{location.hash='#/'}">← Portfolio</button>
+  <span class="vtitle">Abdelrahman Elmeligy — Résumé</span>
+  <a class="vbtn" href="Abdelrahman_Elmeligy_Resume.pdf" download="Abdelrahman_Elmeligy_Resume.pdf">⬇ Download PDF</a>
+  <button class="vbtn solid" onclick="window.print()">Print Résumé</button>
+</div>
+<div class="rwrap">
+  <div class="rpage resume">
+    <div class="rname">Abdelrahman <b>Elmeligy</b></div>
+    <p class="rsub">AI Workflow Systems Designer · New York, NY · <a href="mailto:lfestberg@gmail.com">lfestberg@gmail.com</a> · <a href="https://instagram.com/almeligii">instagram.com/almeligii</a> (141K) · <a href="https://github.com/abdelrahmanelmeligy16-glitch">github.com/abdelrahmanelmeligy16-glitch</a></p>
+
+    <div class="rlabel">Executive profile</div>
+    <p>I design AI agent systems — the workflow architecture, the human-approval gates, the evaluation loops — and direct AI to build them. In one 90-day stretch (May–Aug 2026) I shipped five working platforms on Next.js/TypeScript/Supabase with Claude, MCP, and n8n: a company operating system with 1,158 commits and a real PR workflow, an autonomous revenue operator running unattended on scheduled infrastructure, and an agent gateway with 289 passing tests. My design signature is <b>governed autonomy</b>: systems that act inside human-set boundaries, log everything they do, and stop where judgment belongs to a person. Every claim on this page is evidence-graded (audit 2026-08-22).</p>
+    <div class="rdisc"><b>How I build, honestly:</b> AI generates most of the implementation code. I own problem selection, product direction, workflow architecture, constraints, agent orchestration, evaluation criteria, and iteration — the judgment layer. That combination is the skill: one operator directing AI to production-shaped output at team-level speed.</div>
+
+    <div class="rlabel">What I'm capable of with AI</div>
+    <div class="rcap">
+      <div><b>End-to-end system design:</b> business problem → orchestration → approval gates → execution → self-written audit trail, implemented across 3 production-shaped systems.</div>
+      <div><b>Agent orchestration:</b> primary-brain + advisory-specialist patterns; a personal 6.8GB memory service consulted by other systems before decisions.</div>
+      <div><b>Safety-first automation:</b> approval encoded structurally (publishing exists only as <i>publish_approved</i>); mock-by-default providers protecting live accounts.</div>
+      <div><b>Verification discipline:</b> tool certification with named failure modes; 289-test suites independently reproduced; systems that log their own failures with causes.</div>
+      <div><b>Shipping speed:</b> 5 platforms, ~2,000 commits, 90 days, solo — via structured prompt corpora and agent-facing documentation.</div>
+      <div><b>Translation:</b> a 141K-follower audience — explaining AI systems to engineers, executives, and customers in their language.</div>
+    </div>
+  </div>
+
+  <div class="rpage resume">
+    <div class="rlabel">Flagship project experience — 2026</div>
+
+    <div class="rrole"><h3>KAIRO Intelligence</h3><span class="rmeta">MAY–AUG 2026 · VERIFIED CODEBASE</span></div>
+    <p class="rco" style="color:#5A2A4A;font-weight:600;font-size:12px">AI-native company operating system</p>
+    <ul>
+      <li>Architected a 4,256-file TypeScript platform: 1,158 commits with PR workflow, CI, 62 Supabase migrations, 20 locales incl. RTL (Arabic, Urdu).</li>
+      <li>Designed governed operating loops — agents propose, humans approve — with RBAC enforced by 76 behavioral test files.</li>
+      <li>Built a tool-certification pipeline grading 529 AI capabilities with named failure modes; prepared an acquisition-grade diligence room with honest pre-revenue valuation. Status: pre-revenue; deployment currently offline.</li>
+    </ul>
+
+    <div class="rrole"><h3>Instagram Social Gateway</h3><span class="rmeta">AUG 2026 · 289 TESTS GREEN</span></div>
+    <p class="rco" style="color:#5A2A4A;font-weight:600;font-size:12px">Approval-gated agent access to a live social business</p>
+    <ul>
+      <li>Architected a TypeScript pnpm monorepo — 18-tool MCP server (bearer auth, rate limiting), Next.js dashboard, DB-polling worker + 8 shared packages.</li>
+      <li>289 passing tests (262 unit + 27 contract), clean typecheck/lint, green production build — independently reproduced in a clean copy.</li>
+      <li>Governance in the type system: agents draft and request approval; publishing exists only for approved items; mock-provider default protects the live account.</li>
+    </ul>
+
+    <div class="rrole"><h3>Creator Command (BOLT)</h3><span class="rmeta">JUL 2026–PRESENT · RUNNING LIVE</span></div>
+    <p class="rco" style="color:#5A2A4A;font-weight:600;font-size:12px">Autonomous social-revenue operator</p>
+    <ul>
+      <li>Operates a 141K-follower account's research → content → distribution → measurement loop on 10 scheduled jobs; writes its own 348KB audit log daily, including failures with causes.</li>
+      <li>Multi-model orchestration with voice I/O and n8n; consults a personal AI memory service as its advisory brain before consequential decisions.</li>
+    </ul>
+
+    <div class="rrole"><h3>THE ABDUL</h3><span class="rmeta">AUG 2026 · LIVE INDEX</span></div>
+    <p class="rco" style="color:#5A2A4A;font-weight:600;font-size:12px">Personal AI memory system</p>
+    <ul>
+      <li>Ingested 1,927 work sessions into a live 6.8GB SQLite index served by a dependency-free 152-line Python API, distributed across two machines; consumed by production systems as an advisory brain.</li>
+    </ul>
+
+    <div class="rrole"><h3>E.L.L.A</h3><span class="rmeta">JUN–JUL 2026 · PROTOTYPE</span></div>
+    <p class="rco" style="color:#5A2A4A;font-weight:600;font-size:12px">Creator-business platform</p>
+    <ul>
+      <li>Designed and shipped a Next.js 16 + Supabase platform (13 public pages, full admin CRUD) with a committed design system — tokens, UI kits, and build documentation written for AI agents as first-class users.</li>
+    </ul>
+
+    <div class="rlabel">Skills — evidence-tiered</div>
+    <p><b>Verified strong:</b> AI workflow architecture · agent orchestration · prompt &amp; context engineering · human-in-the-loop design · scheduled automation · technical documentation · AI-assisted shipping speed.<br>
+    <b>Demonstrated:</b> evaluation &amp; QA design · Postgres/Supabase schema design · MCP server design · design systems · n8n automation · business-model thinking.<br>
+    <b>Not claimed:</b> ML engineering · hand-coded senior software engineering · production operations at scale — no evidence yet, so not on this page.</p>
+
+    <div class="rlabel">Additional</div>
+    <p>Creator &amp; operator of @almeligii (141K Instagram followers). Maintains a public evidence-graded portfolio — every claim carries a verification status and reproduction command. Journey: Port Said → Kent → Cairo → Los Angeles → New York.</p>
+  </div>
+</div>`;
+
+/* ==================== ROUTER ==================== */
+function parse(){const h=location.hash.replace(/^#/,"")||"/";const m=h.match(/^\/project\/([\w-]+)/);return m?{r:"/project",arg:m[1]}:{r:h,arg:null}}
+function render(){
+  const{r,arg}=parse();
+  document.documentElement.style.setProperty("--ac","var(--blue)");
+  document.body.classList.toggle("route-resume",r==="/resume");
+  const fn=routes[r]||routes["/"];
+  $("#view").innerHTML=fn(arg);
+  $$("nav.main a").forEach(a=>{const rr=a.dataset.r;a.toggleAttribute("aria-current",false);
+    if(rr==="/"?(r==="/"):r.startsWith(rr)||(rr==="/work"&&(r==="/project"||r==="/compare")))a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  wirePage(r,arg);
+  window.scrollTo({top:0,behavior:"instant"});
+  $("#view").focus({preventScroll:true});
+}
+function wirePage(r,arg){
+  // reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.1});
+  $$(".reveal").forEach(el=>io.observe(el));
+  // count-up
+  if(!reduced){const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;co.unobserve(e.target);
+    const el=e.target,t=+el.dataset.count,disp=el.dataset.disp,st=performance.now();
+    (function f(now){const p=Math.min(1,(now-st)/900);el.textContent=p<1?Math.round(t*p).toLocaleString():disp;if(p<1)requestAnimationFrame(f)})(st);}),{threshold:.5});
+    $$("[data-count]").forEach(el=>co.observe(el));}
+  // dashboard GA map
+  const ga=$("#gaFlow");if(ga)wireFlow(ga,GA_NODES,$("#gaInsp"),n=>`<div class="row"><b>Evidence</b> — see <a href="#/evidence">registry</a></div>`);
+  const ce=$("#ctaEv");if(ce)ce.addEventListener("click",()=>setEv(!document.body.classList.contains("ev")));
+  // metric drawer
+  $$(".met").forEach(b=>b.addEventListener("click",()=>{const m=METRICS[+b.dataset.mi];
+    $("#drawerBody").innerHTML=`<h4 style="font-size:1.1rem">${m.disp} — ${esc(m.label)}</h4>
+    <div class="cmd">${esc(m.cmd)}</div>
+    <p style="font-size:.85rem;color:var(--dim)"><b style="color:var(--pale)">Scope:</b> ${esc(m.scope)} · <b style="color:var(--pale)">Verified:</b> ${AUDIT_DATE}</p>
+    <p style="font-size:.85rem;color:var(--dim);margin-top:6px"><b style="color:var(--ok)">Proves:</b> ${esc(m.proves)}</p>
+    <p style="font-size:.85rem;color:var(--dim);margin-top:4px"><b style="color:var(--warn)">Does not prove:</b> ${esc(m.not)}</p>`;
+    $("#drawer").classList.add("open")}));
+  // work controls
+  $$("[data-wv]").forEach(b=>b.addEventListener("click",()=>{workView=b.dataset.wv;render()}));
+  const wf=$("#wf");if(wf)wf.addEventListener("change",()=>{workFilter=wf.value;render()});
+  const ws=$("#ws");if(ws)ws.addEventListener("change",()=>{workSort=ws.value;render()});
+  // compare checkboxes
+  $$("[data-cmp]").forEach(c=>c.addEventListener("change",()=>{const id=c.dataset.cmp;
+    if(c.checked){if(cmpSel.length>=3){c.checked=false;return}if(!cmpSel.includes(id))cmpSel.push(id)}else cmpSel=cmpSel.filter(x=>x!==id);
+    syncTray()}));
+  // project tabs + flow
+  $$("[data-pt]").forEach(b=>b.addEventListener("click",()=>{projTab[b.dataset.pid]=b.dataset.pt;render()}));
+  const pf=$("#pFlow");if(pf&&r==="/project"){const p=P(arg);wireFlow(pf,p.wf.nodes,$("#pInsp"),n=>`<div class="row"><b>Human approval required</b> — ${n.kind==="gate"?"Yes — this IS the gate":n.kind==="action"?"Upstream gate applies":"No (pre-gate stage)"}</div>`)}
+  // atlas
+  const atP=$("#atP");if(atP)atP.addEventListener("change",()=>{atlasProj=atP.value;render()});
+  const atS=$("#atS");if(atS)atS.addEventListener("change",()=>{atlasSt=atS.value;render()});
+  $$(".acell[data-anid]").forEach(c=>c.addEventListener("click",()=>{
+    const p=P(c.dataset.ap),n=p.wf.nodes.find(x=>x.id===c.dataset.anid);
+    $$(".acell").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");
+    const el=$("#atInsp");el.classList.add("open");
+    el.innerHTML=`<h4>${esc(n.l)} <span class="src">· ${esc(p.name)}</span></h4>
+    <div class="row"><b>Status</b> — ${n.st}</div><div class="row">${esc(n.d)}</div>
+    <div class="row"><b>Limitation</b> — ${esc(p.limitations[0])}</div>
+    <div class="row"><a href="#/project/${p.id}">Open case study →</a></div>`}));
+  // evidence filters + copy
+  const evPf=$("#evPf");if(evPf)evPf.addEventListener("change",()=>{evP=evPf.value;render()});
+  const evSf=$("#evSf");if(evSf)evSf.addEventListener("change",()=>{evS=evSf.value;render()});
+  $$(".copy").forEach(b=>b.addEventListener("click",()=>{navigator.clipboard&&navigator.clipboard.writeText(b.dataset.copy);b.textContent="Copied ✓";setTimeout(()=>b.textContent="Copy record",1400)}));
+  // lab
+  $$("[data-lt]").forEach(b=>b.addEventListener("click",()=>{labTag=b.dataset.lt;render()}));
+  $$("[data-le]").forEach(b=>b.addEventListener("click",()=>{const c=b.closest(".labc");c.classList.toggle("open");b.setAttribute("aria-expanded",c.classList.contains("open"))}));
+  // skills
+  $$("[data-sb]").forEach(b=>b.addEventListener("click",()=>{skillsBy=b.dataset.sb;render()}));
+  $$(".cellr").forEach(b=>b.addEventListener("click",()=>{if(b.classList.contains("na"))return;
+    const sk=b.dataset.sk,pid=b.dataset.sp,el=$("#skInsp");el.classList.add("open");
+    const gen=SKILL_EV[sk]||"";const pj=pid!=="lab"?P(pid):null;
+    el.innerHTML=`<h4>${esc(sk)} ${pj?`· ${esc(pj.name)}`:"· Lab"}</h4>
+    <div class="row"><b>Rating</b> — ${RATING_LABEL[pj?(pj.skills[sk]||"na"):"de"]}</div>
+    ${gen?`<div class="row"><b>Evidence</b> — ${esc(gen)}</div>`:pj?`<div class="row"><b>Evidence</b> — ${esc(pj.verified[0])}</div><div class="row"><b>Limitation</b> — ${esc(pj.limitations[0])}</div>`:""}`}));
+  // video modals (legacy play buttons + new expand buttons)
+  $$(".medbox .play, .vidside .expand").forEach(b=>b.addEventListener("click",e=>{
+    e.preventDefault();e.stopPropagation();
+    const box=b.closest("[data-vid]");lastFocus=b;
+    const v=$("#vmodalVid");v.src=box.dataset.vid;v.muted=false;$("#vmodal").showModal();v.play().catch(()=>{});}));
+  // side-by-side videos: play only while visible (skip autoplay entirely under reduced motion)
+  if(!reduced){
+    const vio=new IntersectionObserver(es=>es.forEach(e=>{
+      const v=e.target;
+      if(e.isIntersecting){v.play().catch(()=>{});}else{v.pause();}
+    }),{threshold:.25});
+    $$("video[data-av]").forEach(v=>vio.observe(v));
+  }
+  syncTray();
+}
+let lastFocus=null;
+function syncTray(){const t=$("#tray");t.classList.toggle("open",cmpSel.length>=1);
+  $("#trayNames").textContent=cmpSel.length?("Compare ("+cmpSel.length+"/3): "+cmpSel.map(id=>P(id).name).join(" · ")):"";}
+$("#trayGo").addEventListener("click",()=>{if(cmpSel.length>=2)location.hash="#/compare"});
+$("#trayClear").addEventListener("click",()=>{cmpSel=[];syncTray();const{r}=parse();if(r==="/compare")location.hash="#/work";else render()});
+
+/* video modal close */
+const vm=$("#vmodal");
+$("#vmodalX").addEventListener("click",()=>vm.close());
+vm.addEventListener("close",()=>{const v=$("#vmodalVid");v.pause();v.removeAttribute("src");v.load();if(lastFocus)lastFocus.focus()});
+vm.addEventListener("click",e=>{if(e.target===vm)vm.close()});
+
+/* drawer */
+$("#drawerX").addEventListener("click",()=>$("#drawer").classList.remove("open"));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#drawer").classList.remove("open");$("#sheet").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false")}});
+
+/* evidence mode */
+function setEv(on){document.body.classList.toggle("ev",on);$("#evBtn").setAttribute("aria-pressed",String(on));try{localStorage.setItem("evmode",on?"1":"0")}catch(e){}}
+$("#evBtn").addEventListener("click",()=>setEv(!document.body.classList.contains("ev")));
+try{if(localStorage.getItem("evmode")==="1")setEv(true)}catch(e){}
+
+/* theme */
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);try{localStorage.setItem("theme",t)}catch(e){}}
+(function(){let t=null;try{t=localStorage.getItem("theme")}catch(e){}
+  /* Editorial ivory is the identity — light is the default; dark only by explicit choice */
+  setTheme(t==="dark"?"dark":"light")})();
+$("#thBtn").addEventListener("click",()=>setTheme(document.documentElement.getAttribute("data-theme")==="light"?"dark":"light"));
+
+/* mobile sheet */
+$("#menuBtn").addEventListener("click",()=>{$("#sheet").classList.add("open");$("#menuBtn").setAttribute("aria-expanded","true");$("#sheetClose").focus()});
+$("#sheetClose").addEventListener("click",()=>{$("#sheet").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false");$("#menuBtn").focus()});
+$$("#sheet a").forEach(a=>a.addEventListener("click",()=>{$("#sheet").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false")}));
+
+/* command palette */
+const CMDS=[
+ ...[["Dashboard","#/"],["Systems Atlas","#/systems"],["Work — all projects","#/work"],["Evidence Registry","#/evidence"],["Experiment Lab","#/lab"],["Skills Matrix","#/skills"],["About & Method","#/about"],["Résumé view","#/resume"]].map(([n,h])=>({n:"Go: "+n,k:"nav",f:()=>location.hash=h})),
+ ...PROJECTS.map(p=>({n:"Open case study: "+p.name,q:p.id,k:"project",f:()=>location.hash="#/project/"+p.id})),
+ ...PROJECTS.map(p=>({n:"Jump to proof: "+p.name,q:p.id,k:"evidence",f:()=>{projTab[p.id]="proof";location.hash="#/project/"+p.id;render()}})),
+ ...PROJECTS.map(p=>({n:"Jump to limitations: "+p.name,q:p.id,k:"evidence",f:()=>{projTab[p.id]="overview";location.hash="#/project/"+p.id;render();setTimeout(()=>{const c=$$(".ovcell")[3];if(c)c.scrollIntoView({behavior:reduced?"instant":"smooth"})},80)}})),
+ {n:"Toggle Evidence Mode",k:"mode",f:()=>setEv(!document.body.classList.contains("ev"))},
+ {n:"Toggle light/dark theme",k:"mode",f:()=>$("#thBtn").click()},
+ {n:"Print / Save résumé as PDF",k:"action",f:()=>{location.hash="#/resume";setTimeout(()=>window.print(),350)}},
+ {n:"Download résumé PDF",q:"pdf download",k:"action",f:()=>{const a=document.createElement("a");a.href="Abdelrahman_Elmeligy_Resume.pdf";a.download="Abdelrahman_Elmeligy_Resume.pdf";document.body.appendChild(a);a.click();a.remove()}}
+];
+const pal=$("#pal"),palIn=$("#palIn"),palList=$("#palList");let palIdx=0,palItems=[];
+function palRender(q=""){const qq=q.toLowerCase();palItems=CMDS.filter(c=>c.n.toLowerCase().includes(qq)||(c.q&&c.q.includes(qq)));palIdx=0;
+  palList.innerHTML=palItems.map((c,i)=>`<li role="option" aria-selected="${i===0}" class="${i===0?"act":""}" data-pi="${i}">${esc(c.n)}<span class="k">${c.k}</span></li>`).join("")||`<li>No commands match</li>`;
+  $$("#palList li").forEach(li=>li.addEventListener("click",()=>{const c=palItems[+li.dataset.pi];if(c){pal.close();c.f()}}))}
+function palOpen(){pal.showModal();palIn.value="";palRender();palIn.focus()}
+$("#palBtn").addEventListener("click",palOpen);
+document.addEventListener("keydown",e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();pal.open?pal.close():palOpen()}});
+palIn.addEventListener("input",()=>palRender(palIn.value));
+palIn.addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"){e.preventDefault();palIdx=Math.min(palIdx+1,palItems.length-1)}
+  else if(e.key==="ArrowUp"){e.preventDefault();palIdx=Math.max(palIdx-1,0)}
+  else if(e.key==="Enter"){e.preventDefault();const c=palItems[palIdx];if(c){pal.close();c.f()}return}
+  else return;
+  $$("#palList li").forEach((li,i)=>{li.classList.toggle("act",i===palIdx);li.setAttribute("aria-selected",String(i===palIdx));if(i===palIdx)li.scrollIntoView({block:"nearest"})})});
+pal.addEventListener("click",e=>{if(e.target===pal)pal.close()});
+
+/* progress bar */
+addEventListener("scroll",()=>{const h=document.documentElement;const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);$("#progress").style.width=(p*100)+"%"},{passive:true});
+
+addEventListener("hashchange",render);
+render();
+</script>
+</body>
+</html>
