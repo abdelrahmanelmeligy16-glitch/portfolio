@@ -364,6 +364,32 @@ body.route-resume footer{display:none}
 .rcap div{font-size:11.8px;line-height:1.5;color:#3A362F}
 .rcap b{color:#211D18}
 @media(max-width:700px){.rpage{padding:32px 22px}.rcap{grid-template-columns:1fr}.vtitle{display:none}}
+/* v3 additions */
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--s2)}
+.vchip{border:1px solid var(--line2);border-radius:20px;padding:.4rem .9rem;font-size:.78rem;color:var(--dim);background:var(--sur1)}
+.vchip[aria-pressed="true"]{background:var(--blue);color:#FBF8F2;border-color:var(--blue)}
+.logbox{background:#211D18;color:#e8e2d6;border-radius:var(--r3);padding:16px 18px;font-family:var(--mono);font-size:.68rem;line-height:1.75;overflow-x:auto;white-space:pre;border:1px solid var(--line2)}
+.logbox .fail{color:#e8a75a;font-weight:600}
+.logbox .okl{color:#9fd0a4}
+.loghead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;margin-bottom:8px}
+.hiregrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s3)}
+@media(max-width:800px){.hiregrid{grid-template-columns:1fr}}
+.hirecard{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:var(--r3);padding:var(--s3)}
+.hirecard .price{font-family:var(--serif);font-size:1.5rem;color:var(--blue);font-weight:500;margin:6px 0}
+.hirecard ul{padding-left:18px;color:var(--dim);font-size:.9rem}
+.tlwrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s3)}
+svg.tl{min-width:760px;width:100%;height:auto}
+svg.tl text{font-family:var(--sans);fill:var(--dim)}
+svg.tl .lane{stroke-width:8;stroke-linecap:round;opacity:.45}
+svg.tl .ms{cursor:pointer}
+svg.tl .ms circle{fill:var(--sur1);stroke-width:2}
+svg.tl .ms:hover circle{stroke-width:3.5}
+.qa-acc details{border:1px solid var(--line);border-radius:var(--r2);margin-bottom:8px;background:var(--card)}
+.qa-acc summary{cursor:pointer;padding:12px 14px;font-weight:600;color:var(--txt);font-size:.92rem}
+.qa-acc details[open] summary{border-bottom:1px solid var(--line)}
+.qa-acc .ans{padding:12px 14px;color:var(--dim);font-size:.9rem}
+.ghlive{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;color:var(--faint)}
+.ghlive i{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;font-style:normal}
 footer{border-top:1px solid var(--line);padding:var(--s5) 0 var(--s4);color:var(--dimr);font-size:.84rem;margin-top:var(--s5)}
 .foot-in{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
 
@@ -404,6 +430,7 @@ dialog.pal::backdrop{background:rgba(2,6,14,.7);backdrop-filter:blur(4px)}
       <a href="#/lab" data-r="/lab">Lab</a>
       <a href="#/skills" data-r="/skills">Skills</a>
       <a href="#/about" data-r="/about">About</a>
+      <a href="#/hire" data-r="/hire" style="color:var(--blue);font-weight:700">Hire</a>
     </nav>
     <div class="bar-actions">
       <button class="ibtn" id="evBtn" aria-pressed="false" title="Toggle Evidence Mode">◈ Evidence</button>
@@ -417,7 +444,7 @@ dialog.pal::backdrop{background:rgba(2,6,14,.7);backdrop-filter:blur(4px)}
   <button class="close" id="sheetClose" aria-label="Close menu">✕</button>
   <a href="#/">Dashboard</a><a href="#/systems">Systems Atlas</a><a href="#/work">Work</a>
   <a href="#/evidence">Evidence</a><a href="#/lab">Lab</a><a href="#/skills">Skills</a>
-  <a href="#/about">About</a><a href="#/resume">Résumé</a>
+  <a href="#/about">About</a><a href="#/hire">Hire</a><a href="#/now">Now</a><a href="#/resume">Résumé</a>
 </div>
 
 <main id="view" class="wrap" tabindex="-1"></main>
@@ -730,10 +757,36 @@ const GA_NODES=[
 const GA_EDGES=[["in","orch"],["orch","ag"],["ag","mem"],["mem","orch"],["orch","pol"],["pol","gate"],["ag","gate"],["gate","act"],["act","ev"],["ev","orch"],["act","out"]];
 
 /* ==================== UTILITIES ==================== */
+
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const P=id=>PROJECTS.find(p=>p.id===id);
+const CASE_QA={"kairo": {"sixty": "KAIRO is a company operating system where AI agents do the operational work — planning, execution, review — inside loops I designed, with human approval required on anything irreversible. It's 4,256 files of TypeScript over 1,158 commits, built in about three months by directing AI rather than hand-coding. The part that makes it different: it certifies its own tools with named failure modes, because in AI-generated software, knowing what actually works is the hard part. It's pre-revenue and I say so — the asset is the architecture and the verification discipline.", "qa": [{"q": "Did AI write this?", "a": "Yes, most of it — see disclosure. I own architecture, gates, evaluation, and every accept/reject decision across 1,158 commits."}, {"q": "Is it live?", "a": "The deployment is currently offline (Vercel billing). It ran on Vercel; restoring it is a decision, not a rebuild. Local demo available."}, {"q": "Does it have users?", "a": "No. Zero revenue, zero customers — my own valuation brief says it first."}, {"q": "What's the hardest problem you solved?", "a": "Capability sprawl: 529 AI-generated tools nobody could trust. Answer: a certification pipeline with named failure modes rather than optimistic feature counts."}, {"q": "Why should a 4,256-file AI-generated codebase impress me rather than worry me?", "a": "It shouldn't impress you by size — it should by the verification machinery around it: 76 behavioral test files, CI, RBAC-tested gates, and a ledger that admits what's uncertified."}]}, "isg": {"sixty": "ISG is the safety layer between AI agents and my real Instagram business. Agents get 18 typed tools over MCP — they can draft and request approval, but 'publish' literally only exists for approved items. A worker claims jobs from Postgres safely, and unless live credentials are explicitly configured, everything runs against a mock and says so in the logs. It has 289 passing tests, which an independent audit reproduced. It's brand new, and the integration tests still need a database container — I'll tell you what's not proven before you ask.", "qa": [{"q": "289 tests in days — did AI write the tests too?", "a": "Mostly, under my direction — and an independent audit re-ran them cold in a clean copy. Green is green; the contracts they test are my design."}, {"q": "What happens if the Meta API changes?", "a": "The meta-instagram package isolates it; contract tests catch drift at the boundary."}, {"q": "Why hasn't the live path run?", "a": "Deliberately. Mock-by-default until I certify with a burner account. The real account is a business asset."}, {"q": "What breaks first at scale?", "a": "Single-worker throughput; the claiming pattern shards naturally, but I haven't needed it."}, {"q": "What's not tested?", "a": "E2e, and 65 integration tests pending Postgres. I keep that list in the open."}]}, "creator-command": {"sixty": "Creator Command runs my Instagram business autonomously — research, content, posting, measurement — on ten scheduled jobs on my own hardware. The design center is auditability: it writes everything it does, and everything that fails, into its own log. When its YouTube publishing broke on an expired token, I found out from its log, not from a silent gap. It's live today; the log has this morning's entries. What it doesn't have: a formal test suite — its successor project fixed that — and I don't claim it built my audience.", "qa": [{"q": "How do I know it's really running?", "a": "Its audit log had entries from the morning of the independent audit; mtimes and job counts were re-verified. I'll show excerpts live."}, {"q": "Why no unit tests?", "a": "Speed tradeoff for a personal production system; 20+ ops scripts gate it instead. My next system shipped with 289 formal tests — I updated the method."}, {"q": "Did it grow the account?", "a": "Unproven, and I won't claim it. The account predates the system; attribution needs data I don't have yet."}, {"q": "What's broken right now?", "a": "YouTube token refresh (HTTP 400). The system logged it; re-auth is a pending credential decision."}, {"q": "Why local infrastructure?", "a": "The credentials and data are the business. They stay on hardware I control."}]}, "the-abdul": {"sixty": "THE ABDUL is my personal memory system. An ingest pipeline processed 1,927 of my working sessions into a 6.8-gigabyte search index, served by a 152-line Python server with zero dependencies. The interesting part is who queries it: not just me — my autonomous systems consult it as an advisory brain before decisions. It's deliberately minimal, it has real gaps — no tests, no auth, SQL search rather than embeddings — and the next milestone is semantic retrieval. It's the spine everything else I build plugs into.", "qa": [{"q": "Why not a vector database?", "a": "Deliberate. SQLite full-text gets 80% of the value with 0% of the operational surface. Embeddings are the next milestone, not the foundation."}, {"q": "152 lines — is that a flex or a limitation?", "a": "Both, honestly. It proves the pattern; it isn't a product. The value is the corpus and the consumption pattern."}, {"q": "What about privacy?", "a": "It's the most private thing I own — local-only, never demoed with real content, curated queries only."}, {"q": "How do agents actually use it?", "a": "HTTP calls from Creator Command before consequential decisions; plus git-tracked distilled memory (decisions/learnings/playbooks) loaded into agent context."}, {"q": "What breaks it?", "a": "Ingest drift if session formats change; no tests means I find out manually. Known debt, stated openly."}]}, "ella": {"sixty": "E.L.L.A puts a creator's entire business — content, services, podcast, products, community — into one owned platform instead of five rented ones. Next.js and Supabase, thirteen public pages, full admin dashboard. Two things worth knowing: its design system is a committed artifact including docs written for AI agents as users, and its git history was partially lost to a sync corruption, which I disclose and learned from. It's a working prototype, currently offline, no users — and the honest fifth data point in a five-platform, ninety-day run.", "qa": [{"q": "What happened to the history?", "a": "Cloud-sync eviction corrupted .git mid-project. One recovery commit preserves the working tree. I keep the corrupt dir as evidence and moved all repos out of synced folders."}, {"q": "Why four repos?", "a": "Iteration snapshots during recovery and redesign. Consolidation to one canonical repo is on the 30-day plan."}, {"q": "Who uses it?", "a": "Nobody yet — built for a specific person, offline pending redeploy."}, {"q": "What's 'agent-facing documentation'?", "a": "Build docs whose reader is the next AI session: constraints, tokens, patterns, dont's. It measurably reduces drift across AI-assisted iterations."}, {"q": "Why show a damaged project at all?", "a": "Because the audit standard is the portfolio's product. A five-for-five perfect record would be less believable than four wins and one disclosed scar."}]}};
+PROJECTS.forEach(p=>Object.assign(p,CASE_QA[p.id]||{}));
+const LOG_LINES=["{\"at\":\"2026-08-17T01:47:09.281Z\",\"actor\":\"system\",\"eventType\":\"watch_digest\",\"resourceRef\":\"watch:digest\",\"summary\":\"1 drafted, 0 approved, 0 published, 5 governor refusals, 0 failures\"}", "{\"at\":\"2026-08-17T01:47:23.571Z\",\"actor\":\"system\",\"eventType\":\"watch_sweep\",\"resourceRef\":\"watch:sweep\",\"summary\":\"37 pending (37 legacy), 0 stale, 2 dupe titles\"}", "{\"at\":\"2026-08-17T01:47:23.703Z\",\"actor\":\"system\",\"eventType\":\"watch_ledger\",\"resourceRef\":\"watch:ledger\",\"summary\":\"clean — 0 attempts/24h, 0 double posts, 0 dead-lettered\"}", "{\"at\":\"2026-08-17T01:47:23.828Z\",\"actor\":\"system\",\"eventType\":\"watch_weekly\",\"resourceRef\":\"watch:weekly\",\"summary\":\"4 posts this week; 5 refusals\"}", "{\"at\":\"2026-08-17T14:14:56.551Z\",\"actor\":\"owner\",\"eventType\":\"publish\",\"resourceRef\":\"publish:direct:youtube\",\"summary\":\"direct publish to youtube FAILED — Google token refresh failed: HTTP 400\"}", "{\"at\":\"2026-08-17T14:20:00.314Z\",\"actor\":\"owner\",\"eventType\":\"publish\",\"resourceRef\":\"publish:direct:youtube\",\"summary\":\"direct publish to youtube FAILED — Google token refresh failed: HTTP 400\"}", "{\"at\":\"2026-08-21T10:31:32.279Z\",\"actor\":\"runner\",\"eventType\":\"mission_completed\",\"resourceRef\":\"mission:find-five-angles\",\"summary\":\"Find 5 trending angles in my niche produced 3319 chars (angles); skills: kai-growth-hacker; playbook: pb-1, pb-2, pb-3, pb-4, pb-5; memory: [id]\"}", "{\"at\":\"2026-08-22T10:02:58.504Z\",\"actor\":\"runner\",\"eventType\":\"company_brief\",\"resourceRef\":\"company:ceo:co.plan_day\",\"summary\":\"brief 2026-08-22: 5 assignment(s), 5 newly enqueued, 1 dormant, 0 budget stop(s)\"}", "{\"at\":\"2026-08-22T10:03:02.181Z\",\"actor\":\"runner\",\"eventType\":\"company_mission_ok\",\"resourceRef\":\"company:analyst:co.distill_playbook\",\"summary\":\"Distill outcomes into playbook rules → ok · cost 0 tok / 0 cr (measured) · skills: none · playbook: none\"}", "{\"at\":\"2026-08-22T10:30:49.281Z\",\"actor\":\"owner\",\"eventType\":\"mission_started\",\"resourceRef\":\"mission:find-five-angles\",\"summary\":\"Find 5 trending angles in my niche started via owner; skills: kai-growth-hacker\"}", "{\"at\":\"2026-08-22T10:30:54.048Z\",\"actor\":\"runner\",\"eventType\":\"mission_failed\",\"resourceRef\":\"mission:find-five-angles\",\"summary\":\"Find 5 trending angles in my niche failed — You're out of extra usage · resets 8am (America/New_York)\"}", "{\"at\":\"2026-08-22T11:01:01.400Z\",\"actor\":\"runner\",\"eventType\":\"company_mission_failed\",\"resourceRef\":\"company:cmo:co.script_three\",\"summary\":\"Fill the approval queue with the day's pieces → failed · error: trends stage: You're out of extra usage · resets 8am (America/New_York) · cost 60000 tok / 36 cr (ESTIMATE) · skills: competitor-research, competitor-research-brief · playbook: none\"}"];
+const fmtLog=l=>{const bad=/FAILED|failed/.test(l);return `<span class="${bad?'fail':'okl'}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`};
+const TIMELINE=[
+ {id:"kairo",n:"KAIRO Intelligence",c:"#5A2A4A",s:"2026-05-21",e:"2026-08-13",ms:[
+  ["2026-05-21","First commit","git history"],["2026-07-02","kairo-continuum decommissioned into the platform","git log (verbatim commit)"],["2026-08-08","Master plan + honest valuation brief written","docs read in audit"],["2026-08-13","Last commit — PR #379 merged","git log"],["2026-08-22","Fresh-clone production build verified","verification-logs/kairo-intelligence-build.log"]]},
+ {id:"creator-command",n:"Creator Command",c:"#7a4a68",s:"2026-07-27",e:"2026-08-22",live:true,ms:[
+  ["2026-07-27","First commit","git history"],["2026-08-15","Last commit (feature branch)","git log"],["2026-08-17","System logs its own YouTube token failure","audit.jsonl (verbatim)"],["2026-08-22","Audit log entries the morning of the audit","stat mtime, same-day check"]]},
+ {id:"the-abdul",n:"THE ABDUL",c:"#5A4A7A",s:"2026-08-05",e:"2026-08-22",ms:[
+  ["2026-08-05","Framework docs begin","file dates"],["2026-08-21","Agent memory git-tracked","git log"],["2026-08-22","6.8GB index live (WAL warm)","file check same day"]]},
+ {id:"ella",n:"E.L.L.A",c:"#96691E",s:"2026-06-23",e:"2026-07-29",ms:[
+  ["2026-06-23","Working tree begins","file dates"],["2026-07-05","Git corruption + recovery commit","repo inspection"],["2026-07-29","Last activity","file dates"]]},
+ {id:"isg",n:"Instagram Social Gateway",c:"#3E6B45",s:"2026-08-20",e:"2026-08-22",live:true,ms:[
+  ["2026-08-20","First commit","git history"],["2026-08-22","262 unit + 27 contract tests reproduced green","clean-copy rerun logs"]]}
+];
+const NOW_ENTRIES=[
+ {d:"2026-08-22",t:"Shipped portfolio v3 — hire page, 90-day build timeline, live audit-log artifact, Q&A per project, QR résumé. First consulting cohort open."}
+];
+function vmodeTeaser(){const m=localStorage.getItem("vmode");
+ if(m==="client")return `<div class="panel reveal in" style="padding:var(--s3);margin-top:var(--s3);border-top:3px solid var(--blue)"><b style="font-family:var(--serif);font-size:1.1rem">Need an automation like these?</b><p class="ssub" style="margin-top:4px">Fixed-scope Claude + n8n agent builds with human-approval gates and audit logging — $2,500–5,000, ~2 weeks.</p><div class="ctarow" style="margin-top:12px"><a class="btn btn-p" href="#/hire">See offers & pricing</a><a class="btn btn-g" href="#/work">Watch the demos</a></div></div>`;
+ if(m==="recruiter")return `<div class="panel reveal in" style="padding:var(--s3);margin-top:var(--s3);border-top:3px solid var(--blue)"><b style="font-family:var(--serif);font-size:1.1rem">Hiring for AI ops / enablement / automation?</b><p class="ssub" style="margin-top:4px">Evidence-tiered skills, honest maturity badges, and a print-ready résumé — every claim carries its verification command.</p><div class="ctarow" style="margin-top:12px"><a class="btn btn-p" href="#/resume">Résumé (PDF)</a><a class="btn btn-g" href="#/skills">Skills evidence</a><a class="btn btn-g" href="https://www.linkedin.com/in/abdelrahman-elmeligy-847901169/" target="_blank" rel="noopener">LinkedIn</a></div></div>`;
+ if(m==="engineer")return `<div class="panel reveal in" style="padding:var(--s3);margin-top:var(--s3);border-top:3px solid var(--blue)"><b style="font-family:var(--serif);font-size:1.1rem">Engineer mode: skip the pitch.</b><p class="ssub" style="margin-top:4px">Interactive system topologies, the evidence registry with reproduction commands, and the limitations we publish on purpose.</p><div class="ctarow" style="margin-top:12px"><a class="btn btn-p" href="#/systems">Systems Atlas</a><a class="btn btn-g" href="#/evidence">Evidence registry</a><button class="btn btn-g" onclick="document.querySelector('#evBtn').click()">Toggle Evidence Mode</button></div></div>`;
+ return ""}
+
 function badge(p){return `<span class="badge ${p.maturity.cls}">${p.maturity.label}</span>`}
 
 /* ==================== FLOW DIAGRAM RENDERER ==================== */
@@ -834,7 +887,12 @@ routes["/"]=()=>`
       <div><span class="tick">✓</span><b>1,158 commits on the flagship platform</b> — with tool certification by named failure mode <span class="src">· git rev-list --count</span></div>
     </div>
     <div class="disc"><b>How I build, honestly:</b> this portfolio represents AI-assisted product development. AI generated much of the implementation. I own the problem framing, product direction, workflow architecture, constraints, orchestration, evaluation, and iteration.</div>
-    <div class="ctarow"><a class="btn btn-p" href="#/work">Explore the systems</a><button class="btn btn-g" id="ctaEv">Inspect the evidence</button><a class="btn btn-g" href="#/resume">View résumé →</a></div>
+    <div class="ctarow"><a class="btn btn-p" href="#/hire">Work with me</a><a class="btn btn-g" href="#/work">Explore the systems</a><button class="btn btn-g" id="ctaEv">Inspect the evidence</button><a class="btn btn-g" href="#/resume">View résumé →</a></div>
+    <div class="chiprow" role="group" aria-label="Choose your view">
+      <span class="src" style="align-self:center">I'm a…</span>
+      ${["recruiter","client","engineer"].map(m=>`<button class="vchip" data-vm="${m}" aria-pressed="${(localStorage.getItem("vmode")||"")===m}">${m}</button>`).join("")}
+    </div>
+    <div class="ghlive" id="ghLive" style="margin-top:14px" hidden><i></i><span></span></div>
   </div>
   <div>
     <div class="vidside" data-vid="https://d2ol7oe51mr4n9.cloudfront.net/user_3Gg1Q78Cb1FOICjXRuSi6yPzabT/6dfa73f9-64eb-41a0-9c7c-e0b6cd6038be.mp4" style="max-width:340px;margin:0 auto var(--s3);aspect-ratio:9/16;border-radius:var(--r3);box-shadow:var(--sh2)">
@@ -850,6 +908,7 @@ routes["/"]=()=>`
     </div>
   </div>
 </section>
+${vmodeTeaser()}
 <section class="blk">
   <span class="stag">Evidence strip</span><h2>The numbers, with their receipts</h2>
   <p class="ssub">Click any metric for its source command, scope, and what it does — and does not — prove.</p>
@@ -869,6 +928,11 @@ routes["/"]=()=>`
       ${[["ISG — passing tests",289,"var(--ok)"],["KAIRO — test files",76,"var(--blue)"],["Creator Command — ops scripts",20,"var(--warn)"],["Others — none",0,"var(--gray)"]].map(([l,v,c])=>`
       <div class="hbar"><span>${l}</span><div class="tr"><div class="fl" style="width:${Math.min(100,v/2.9)}%;background:${c}"></div></div><span>${v}</span></div>`).join("")}
       <p class="src" style="margin-top:8px">ISG reproduced; KAIRO/CC counted, not re-executed</p></div>
+  </div>
+  <div class="panel" style="padding:var(--s3);margin-top:var(--s3)" data-grade="verified">
+    <div class="loghead"><b style="font-family:var(--mono);font-size:.8rem">audit.jsonl — written by the system itself</b><a href="#/project/creator-command" class="src" style="text-decoration:none">full artifact + context →</a></div>
+    <div class="logbox">${LOG_LINES.slice(7,11).map(fmtLog).join("\n")}</div>
+    <p class="src" style="margin-top:8px">Real entries from Creator Command's self-written audit log, redacted for publication. Amber = the system logging its own failures, with causes.</p>
   </div>
 </section>
 <section class="blk">
@@ -975,7 +1039,7 @@ routes["/project"]=(id)=>{
   const p=P(id); if(!p)return `<section class="blk"><h2>Unknown system</h2><p class="ssub"><a href="#/work">Back to Work</a></p></section>`;
   const tab=projTab[id]||"overview";
   document.documentElement.style.setProperty("--ac",p.accent);
-  const tabs=[["overview","Overview"],["system","System"],["proof","Proof"],["decisions","Decisions"],["roadmap","Roadmap"]];
+  const tabs=[["overview","Overview"],["system","System"],["proof","Proof"],["qa","Q&A"],["decisions","Decisions"],["roadmap","Roadmap"]];
   let body="";
   if(tab==="overview")body=`
     <div class="ovwrap">
@@ -1011,7 +1075,19 @@ routes["/project"]=(id)=>{
 <b>does not prove:</b> ${esc(e.not)}</div></details>
       </div>
       <div class="limits"><b>Scope limit:</b> ${esc(e.not)}</div>`).join("")}
+    ${p.id==="creator-command"?`
+    <div class="panel" style="padding:var(--s3);margin-top:var(--s3)" data-grade="verified">
+      <div class="loghead"><b style="font-family:var(--mono);font-size:.82rem">audit.jsonl — 12 real entries, redacted for publication</b><span class="src">source: data/audit.jsonl · 1,517 lines · 2026-07-29 → 2026-08-22</span></div>
+      <div class="logbox">${LOG_LINES.map(fmtLog).join("\n")}</div>
+      <div class="limits" style="margin-top:10px"><b>What was redacted:</b> one internal memory ID → [id]; two truncated JSON fragments dropped. Everything else — timestamps, events, failure causes, the governor refusals, the cost estimate — is verbatim. Amber lines are the system reporting its own failures.</div>
+    </div>`:""}
     <p class="src" style="margin-top:12px">Proof never appears without its limitation. Full registry: <a href="#/evidence">Evidence</a>.</p>`;
+  if(tab==="qa")body=p.qa?`
+    <div class="ovcell" style="margin-top:var(--s3)"><h4>The 60-second version</h4><p style="font-family:var(--serif);font-size:1.02rem;font-style:italic">"${esc(p.sixty)}"</p></div>
+    <div class="qa-acc" style="margin-top:var(--s2)">
+      ${p.qa.map(x=>`<details><summary>${esc(x.q)}</summary><div class="ans">${esc(x.a)}</div></details>`).join("")}
+    </div>
+    <p class="src" style="margin-top:10px">Real questions, honest answers — the same ones I give in interviews.</p>`:`<p class="ssub">No Q&A recorded for this project.</p>`;
   if(tab==="decisions")body=`
     <div class="ovgrid">${p.decisions.map((d,i)=>`<div class="ovcell"><h4>Decision ${i+1}</h4><p>${esc(d)}</p></div>`).join("")}</div>`;
   if(tab==="roadmap")body=`
@@ -1200,8 +1276,16 @@ routes["/resume"]=()=>`
 </div>
 <div class="rwrap">
   <div class="rpage resume">
-    <div class="rname">Abdelrahman <b>Elmeligy</b></div>
+    <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+      <div style="min-width:0">
+      <div class="rname">Abdelrahman <b>Elmeligy</b></div>
     <p class="rsub">AI Workflow Systems Designer · New York, NY · <a href="mailto:abdelrahmanelmeligy16@gmail.com">abdelrahmanelmeligy16@gmail.com</a> · <a href="https://instagram.com/almeligii">instagram.com/almeligii</a> (141K) · <a href="https://github.com/abdelrahmanelmeligy16-glitch">github.com/abdelrahmanelmeligy16-glitch</a> · <a href="https://www.linkedin.com/in/abdelrahman-elmeligy-847901169/">LinkedIn</a></p>
+      </div>
+      <div style="flex:none;text-align:center;width:88px">
+        <div style="width:88px;height:88px"><svg width="37" height="37" class="segno"><path class="qrline" stroke="#211d18" d="M2 2.5h7m2 0h1m3 0h1m3 0h4m1 0h2m2 0h7m-33 1h1m5 0h1m3 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m2 0h1m3 0h3m3 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m4 0h4m1 0h1m2 0h3m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h1m1 0h5m1 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h3m3 0h3m7 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h2m1 0h1m2 0h2m3 0h3m1 0h1m-24 1h1m1 0h5m4 0h1m1 0h5m4 0h3m1 0h5m-31 1h1m2 0h1m1 0h1m1 0h2m8 0h4m2 0h1m2 0h2m1 0h4m-33 1h1m1 0h1m2 0h3m1 0h2m4 0h2m3 0h1m1 0h1m3 0h1m1 0h1m1 0h2m-31 1h3m1 0h1m1 0h2m2 0h2m1 0h2m2 0h1m1 0h3m2 0h1m2 0h4m-32 1h1m5 0h1m1 0h1m1 0h1m4 0h1m1 0h1m6 0h2m1 0h3m2 0h1m-33 1h1m1 0h1m6 0h2m1 0h5m1 0h4m1 0h4m2 0h4m-31 1h1m3 0h1m1 0h1m1 0h1m10 0h1m2 0h3m1 0h1m1 0h2m-30 1h2m5 0h2m2 0h2m1 0h1m3 0h7m2 0h2m-31 1h2m1 0h8m2 0h1m2 0h2m4 0h1m1 0h2m1 0h2m3 0h1m-33 1h1m1 0h1m2 0h1m1 0h3m1 0h3m3 0h4m2 0h1m2 0h2m1 0h2m1 0h1m-33 1h2m3 0h2m1 0h2m3 0h4m1 0h1m3 0h1m1 0h2m1 0h2m1 0h2m-32 1h3m1 0h1m4 0h1m1 0h5m3 0h4m4 0h4m-29 1h9m1 0h3m2 0h1m1 0h2m1 0h1m1 0h2m1 0h3m1 0h2m-33 1h3m1 0h2m1 0h1m1 0h3m3 0h1m1 0h4m1 0h2m2 0h1m3 0h1m1 0h1m-33 1h1m1 0h2m2 0h4m1 0h2m1 0h2m5 0h1m5 0h3m1 0h1m-32 1h1m1 0h1m5 0h2m2 0h4m2 0h2m1 0h1m3 0h1m2 0h4m-32 1h1m2 0h4m1 0h1m1 0h1m4 0h3m4 0h1m1 0h5m3 0h1m-25 1h1m4 0h1m2 0h6m2 0h1m3 0h1m1 0h1m1 0h1m-33 1h7m3 0h2m1 0h5m2 0h2m1 0h2m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h1m5 0h1m1 0h1m4 0h1m1 0h2m3 0h5m-33 1h1m1 0h3m1 0h1m1 0h3m4 0h1m1 0h2m1 0h1m1 0h1m1 0h6m1 0h1m-32 1h1m1 0h3m1 0h1m1 0h2m2 0h1m2 0h1m1 0h4m4 0h1m2 0h1m2 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m5 0h3m1 0h1m1 0h3m1 0h1m1 0h2m2 0h1m-31 1h1m5 0h1m3 0h2m1 0h2m1 0h1m2 0h5m2 0h1m1 0h1m1 0h1m-31 1h7m1 0h1m1 0h1m3 0h1m2 0h1m1 0h1m2 0h3m2 0h1m3 0h1"/></svg></div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#8B8272;margin-top:3px;line-height:1.3">SCAN → PORTFOLIO</div>
+      </div>
+    </div>
 
     <div class="rlabel">Executive profile</div>
     <p>I design AI agent systems — the workflow architecture, the human-approval gates, the evaluation loops — and direct AI to build them. In one 90-day stretch (May–Aug 2026) I shipped five working platforms on Next.js/TypeScript/Supabase with Claude, MCP, and n8n: a company operating system with 1,158 commits and a real PR workflow, an autonomous revenue operator running unattended on scheduled infrastructure, and an agent gateway with 289 passing tests. My design signature is <b>governed autonomy</b>: systems that act inside human-set boundaries, log everything they do, and stop where judgment belongs to a person. Every claim on this page is evidence-graded (audit 2026-08-22).</p>
@@ -1265,6 +1349,80 @@ routes["/resume"]=()=>`
     <p>Creator &amp; operator of @almeligii (141K Instagram followers). Maintains a public evidence-graded portfolio — every claim carries a verification status and reproduction command. Journey: Port Said → Kent → Cairo → Los Angeles → New York.</p>
   </div>
 </div>`;
+
+
+/* ---------- HIRE ---------- */
+routes["/hire"]=()=>`
+<section class="blk">
+  <span class="stag">Work with me</span><h2>Two ways to <span class="grad">put this to work.</span></h2>
+  <p class="ssub">Everything on this site is the track record. First consulting cohort — pricing reflects that, the evidence standard doesn't change.</p>
+  <div class="hiregrid">
+    <div class="hirecard">
+      <span class="stag">Offer 01</span>
+      <h3 style="font-size:1.3rem;margin-top:6px">AI Automation Build</h3>
+      <div class="price">$2,500–5,000 <span style="font-size:.85rem;color:var(--dimr)">fixed · ~2 weeks</span></div>
+      <ul>
+        <li>One governed automation, shipped: a Claude + n8n agent workflow around a real process in your business</li>
+        <li>Human-approval gates on anything irreversible — nothing acts without your sign-off</li>
+        <li>Audit logging built in: the system records what it did and what failed, with causes</li>
+        <li>Handover doc + a proof/limitations report — the same evidence standard my own systems get</li>
+      </ul>
+      <div class="ctarow" style="margin-top:var(--s2)"><a class="btn btn-p" href="mailto:abdelrahmanelmeligy16@gmail.com?subject=Automation%20build%20inquiry&body=Company%3A%0AProcess%20I%20want%20automated%3A%0ATools%20we%20use%20today%3A%0ATimeline%3A%0A">Start an inquiry</a></div>
+    </div>
+    <div class="hirecard">
+      <span class="stag">Offer 02</span>
+      <h3 style="font-size:1.3rem;margin-top:6px">AI Ops / Enablement roles</h3>
+      <div class="price">Open to full-time <span style="font-size:.85rem;color:var(--dimr)">NYC · Remote</span></div>
+      <ul>
+        <li>AI Operations, Implementation, Enablement, and Automation roles</li>
+        <li>What I bring: 5 shipped systems in 90 days, governed-autonomy design, and the discipline of evidence-graded reporting</li>
+        <li>What I don't claim: ML engineering, hand-coded senior SWE, production ops at scale — the <a href="#/skills">Not Claimed list</a> is public</li>
+      </ul>
+      <div class="ctarow" style="margin-top:var(--s2)"><a class="btn btn-p" href="#/resume">Résumé + PDF</a><a class="btn btn-g" href="mailto:abdelrahmanelmeligy16@gmail.com?subject=Role%20conversation&body=Role%3A%0ACompany%3A%0AWhy%20this%20looked%20like%20a%20fit%3A%0A">Email me</a></div>
+    </div>
+  </div>
+  <div class="panel" style="padding:var(--s3);margin-top:var(--s3)">
+    <span class="stag">Client results</span>
+    <p class="ssub" style="margin-top:6px">Client results will be reported here with the same evidence standard as everything else on this site — verification method, outcome, and limitations. First engagements in progress; nothing is shown until it's real.</p>
+  </div>
+</section>`;
+
+/* ---------- TIMELINE ---------- */
+routes["/timeline"]=()=>{
+  const t0=new Date("2026-05-15").getTime(), t1=new Date("2026-08-27").getTime();
+  const W=980,LX=200,RX=30,TY=40,LH=52;
+  const x=d=>LX+((new Date(d).getTime()-t0)/(t1-t0))*(W-LX-RX);
+  const months=[["2026-06-01","JUN"],["2026-07-01","JUL"],["2026-08-01","AUG"]];
+  let svg=`<svg class="tl" viewBox="0 0 ${W} ${TY+TIMELINE.length*LH+30}" role="img" aria-label="90-day build timeline">`;
+  months.forEach(([d,l])=>{svg+=`<line x1="${x(d)}" y1="${TY-14}" x2="${x(d)}" y2="${TY+TIMELINE.length*LH}" stroke="var(--line)"/><text x="${x(d)+4}" y="${TY-18}" font-size="10" style="fill:var(--faint);font-family:var(--mono)">${l}</text>`});
+  TIMELINE.forEach((p,i)=>{const y=TY+i*LH+LH/2;
+    svg+=`<text x="0" y="${y+4}" font-size="12" font-weight="600" style="fill:var(--txt)">${esc(p.n)}${p.live?' <tspan style="fill:var(--ok)">●</tspan>':''}</text>`;
+    svg+=`<line class="lane" x1="${x(p.s)}" y1="${y}" x2="${x(p.e)}" y2="${y}" stroke="${p.c}"/>`;
+    p.ms.forEach((m,j)=>{svg+=`<g class="ms" tabindex="0" role="button" data-tl="${p.id}:${j}" aria-label="${esc(m[1])}"><circle cx="${x(m[0])}" cy="${y}" r="6" stroke="${p.c}"/></g>`});
+  });
+  svg+=`</svg>`;
+  return `
+  <section class="blk">
+    <span class="stag">The 90 days</span><h2>Five platforms, <span class="grad">one timeline.</span></h2>
+    <p class="ssub">Every dot is an audited event — click it for what happened and the evidence it traces to. Green ● = verified active at audit (2026-08-22).</p>
+    <div class="tlwrap" style="margin-top:var(--s3)">${svg}</div>
+    <div class="insp" id="tlInsp" aria-live="polite" style="margin-top:var(--s2)"></div>
+    <p class="src" style="margin-top:10px">Dates from git history, file mtimes, and reproduction logs — see the <a href="#/evidence">Evidence registry</a>.</p>
+  </section>`;
+};
+
+/* ---------- NOW ---------- */
+routes["/now"]=()=>{
+  const newest=new Date(NOW_ENTRIES[0].d).getTime();
+  const stale=(Date.now()-newest)/864e5>21;
+  return `
+  <section class="blk">
+    <span class="stag">Now</span><h2>What I'm working on</h2>
+    ${stale?`<p class="ssub">This page pauses when it can't be fresh — see the <a href="#/timeline">timeline</a> and <a href="#/evidence">evidence registry</a> for dated activity.</p>`
+    :`<p class="ssub">One line a week, newest first. Last updated <b>${NOW_ENTRIES[0].d}</b>.</p>
+    <div style="margin-top:var(--s3);display:grid;gap:10px">${NOW_ENTRIES.map(e=>`<div class="panel" style="padding:14px 18px"><span class="src">${e.d}</span><p style="color:var(--dim);font-size:.94rem;margin-top:2px">${esc(e.t)}</p></div>`).join("")}</div>`}
+  </section>`;
+};
 
 /* ==================== ROUTER ==================== */
 function parse(){const h=location.hash.replace(/^#/,"")||"/";const m=h.match(/^\/project\/([\w-]+)/);return m?{r:"/project",arg:m[1]}:{r:h,arg:null}}
@@ -1395,6 +1553,32 @@ function wirePage(r,arg){
       if(best&&best.muted&&best.dataset.usermute!=="1")soundOn(best);
     },300);
   }
+  // visitor mode chips
+  $$("[data-vm]").forEach(c=>c.addEventListener("click",()=>{const m=c.dataset.vm;
+    const cur=localStorage.getItem("vmode");
+    if(cur===m)localStorage.removeItem("vmode");else localStorage.setItem("vmode",m);
+    render()}));
+  // live GitHub strip (public portfolio repo only; graceful offline fallback)
+  const gh=$("#ghLive");
+  if(gh&&location.protocol.startsWith("http")){
+    const cached=sessionStorage.getItem("ghts");
+    const show=iso=>{const d=Math.round((Date.now()-new Date(iso).getTime())/864e5);
+      gh.hidden=false;gh.querySelector("span").textContent="portfolio last deployed "+(d<=0?"today":d+" day"+(d>1?"s":"")+" ago")+" — live from the GitHub API";};
+    if(cached)show(cached);
+    else fetch("https://api.github.com/repos/abdelrahmanelmeligy16-glitch/portfolio/commits?per_page=1")
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(j=>{const iso=j[0]&&j[0].commit&&j[0].commit.committer.date;if(iso){sessionStorage.setItem("ghts",iso);show(iso)}})
+      .catch(()=>{});
+  }
+  // timeline inspector
+  $$("[data-tl]").forEach(g=>{const open=()=>{const[pid,j]=g.dataset.tl.split(":");
+    const p=TIMELINE.find(t=>t.id===pid),m=p.ms[+j],el=$("#tlInsp");
+    $$("svg.tl .ms").forEach(x=>x.classList.remove("sel"));g.classList.add("sel");
+    el.classList.add("open");el.classList.remove("sroff");
+    el.innerHTML=`<h4>${esc(p.n)} — ${m[0]}</h4><div class="row">${esc(m[1])}</div><div class="row"><b>Evidence</b> — ${esc(m[2])}</div>`};
+    g.addEventListener("click",open);
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}});
+  });
   syncTray();
 }
 let lastFocus=null;
@@ -1432,10 +1616,17 @@ $$("#sheet a").forEach(a=>a.addEventListener("click",()=>{$("#sheet").classList.
 
 /* command palette */
 const CMDS=[
- ...[["Dashboard","#/"],["Systems Atlas","#/systems"],["Work — all projects","#/work"],["Evidence Registry","#/evidence"],["Experiment Lab","#/lab"],["Skills Matrix","#/skills"],["About & Method","#/about"],["Résumé view","#/resume"]].map(([n,h])=>({n:"Go: "+n,k:"nav",f:()=>location.hash=h})),
+ ...[["Dashboard","#/"],["Systems Atlas","#/systems"],["Work — all projects","#/work"],["Evidence Registry","#/evidence"],["Experiment Lab","#/lab"],["Skills Matrix","#/skills"],["About & Method","#/about"],["Hire me — offers & pricing","#/hire"],["Build timeline — the 90 days","#/timeline"],["Now — this week","#/now"],["Résumé view","#/resume"]].map(([n,h])=>({n:"Go: "+n,k:"nav",f:()=>location.hash=h})),
  ...PROJECTS.map(p=>({n:"Open case study: "+p.name,q:p.id,k:"project",f:()=>location.hash="#/project/"+p.id})),
  ...PROJECTS.map(p=>({n:"Jump to proof: "+p.name,q:p.id,k:"evidence",f:()=>{projTab[p.id]="proof";location.hash="#/project/"+p.id;render()}})),
  ...PROJECTS.map(p=>({n:"Jump to limitations: "+p.name,q:p.id,k:"evidence",f:()=>{projTab[p.id]="overview";location.hash="#/project/"+p.id;render();setTimeout(()=>{const c=$$(".ovcell")[3];if(c)c.scrollIntoView({behavior:reduced?"instant":"smooth"})},80)}})),
+ {n:"Does anything have tests?",q:"tests verified",k:"ask",f:()=>{projTab["isg"]="proof";location.hash="#/project/isg";render()}},
+ {n:"What's broken right now?",q:"broken failing limitations",k:"ask",f:()=>{evS="other";location.hash="#/evidence";render()}},
+ {n:"Is anything running live?",q:"live production running",k:"ask",f:()=>location.hash="#/project/creator-command"},
+ {n:"Show me the audit log",q:"audit log proof",k:"ask",f:()=>{projTab["creator-command"]="proof";location.hash="#/project/creator-command";render()}},
+ {n:"Can I hire you?",q:"hire price cost consulting",k:"ask",f:()=>location.hash="#/hire"},
+ {n:"What do you NOT claim?",q:"not claimed honest",k:"ask",f:()=>location.hash="#/skills"},
+ {n:"How was all this verified?",q:"verified method audit",k:"ask",f:()=>location.hash="#/about"},
  {n:"Toggle Evidence Mode",k:"mode",f:()=>setEv(!document.body.classList.contains("ev"))},
  {n:"Toggle light/dark theme",k:"mode",f:()=>$("#thBtn").click()},
  {n:"Print / Save résumé as PDF",k:"action",f:()=>{location.hash="#/resume";setTimeout(()=>window.print(),350)}},
