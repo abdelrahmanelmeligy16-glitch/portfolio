@@ -364,6 +364,23 @@ body.route-resume footer{display:none}
 .rcap div{font-size:11.8px;line-height:1.5;color:#3A362F}
 .rcap b{color:#211D18}
 @media(max-width:700px){.rpage{padding:32px 22px}.rcap{grid-template-columns:1fr}.vtitle{display:none}}
+/* v4: sim engine + fleet */
+.simbar{display:flex;gap:8px;align-items:center;margin-top:var(--s2);flex-wrap:wrap}
+.simbtn{background:var(--blue);color:#FBF8F2;border-radius:var(--r2);padding:.55rem 1.1rem;font-weight:700;font-size:.85rem;min-height:40px}
+.simbtn:hover{background:var(--blue2)}
+.simbtn.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue)}
+.simcard{display:none;margin-top:var(--s2);background:var(--sur1);border:1px solid var(--line2);border-left:3px solid var(--blue);border-radius:var(--r3);padding:var(--s2) var(--s3);box-shadow:var(--sh1)}
+.simcard.open{display:block;animation:poppin .18s ease}
+.simcard .st{font-family:var(--mono);font-size:.66rem;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+.simcard h4{font-family:var(--serif);font-weight:500;font-size:1.05rem;margin:4px 0 6px}
+.simcard .client{color:var(--dim);font-size:.92rem}
+.simcard .eng{background:#211D18;color:#e8e2d6;font-family:var(--mono);font-size:.68rem;line-height:1.6;border-radius:var(--r2);padding:10px 12px;margin-top:8px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+.simcard .src2{font-family:var(--mono);font-size:.62rem;color:var(--warn);margin-top:8px;display:block}
+.simdots{display:flex;gap:5px;margin-top:10px}
+.simdots i{width:8px;height:8px;border-radius:50%;background:var(--line2);font-style:normal}
+.simdots i.on{background:var(--blue)}
+svg.flow .nd.simhot rect,svg.flow .nd.simhot polygon{filter:drop-shadow(0 0 10px var(--ac));transform:scale(1.12)}
+.replay-tag{font-family:var(--mono);font-size:.64rem;color:var(--ok);border:1px solid rgba(62,107,69,.4);border-radius:12px;padding:.2rem .6rem}
 /* v3 additions */
 .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--s2)}
 .vchip{border:1px solid var(--line2);border-radius:20px;padding:.4rem .9rem;font-size:.78rem;color:var(--dim);background:var(--sur1)}
@@ -764,6 +781,88 @@ const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const P=id=>PROJECTS.find(p=>p.id===id);
 const CASE_QA={"kairo": {"sixty": "KAIRO is a company operating system where AI agents do the operational work — planning, execution, review — inside loops I designed, with human approval required on anything irreversible. It's 4,256 files of TypeScript over 1,158 commits, built in about three months by directing AI rather than hand-coding. The part that makes it different: it certifies its own tools with named failure modes, because in AI-generated software, knowing what actually works is the hard part. It's pre-revenue and I say so — the asset is the architecture and the verification discipline.", "qa": [{"q": "Did AI write this?", "a": "Yes, most of it — see disclosure. I own architecture, gates, evaluation, and every accept/reject decision across 1,158 commits."}, {"q": "Is it live?", "a": "The deployment is currently offline (Vercel billing). It ran on Vercel; restoring it is a decision, not a rebuild. Local demo available."}, {"q": "Does it have users?", "a": "No. Zero revenue, zero customers — my own valuation brief says it first."}, {"q": "What's the hardest problem you solved?", "a": "Capability sprawl: 529 AI-generated tools nobody could trust. Answer: a certification pipeline with named failure modes rather than optimistic feature counts."}, {"q": "Why should a 4,256-file AI-generated codebase impress me rather than worry me?", "a": "It shouldn't impress you by size — it should by the verification machinery around it: 76 behavioral test files, CI, RBAC-tested gates, and a ledger that admits what's uncertified."}]}, "isg": {"sixty": "ISG is the safety layer between AI agents and my real Instagram business. Agents get 18 typed tools over MCP — they can draft and request approval, but 'publish' literally only exists for approved items. A worker claims jobs from Postgres safely, and unless live credentials are explicitly configured, everything runs against a mock and says so in the logs. It has 289 passing tests, which an independent audit reproduced. It's brand new, and the integration tests still need a database container — I'll tell you what's not proven before you ask.", "qa": [{"q": "289 tests in days — did AI write the tests too?", "a": "Mostly, under my direction — and an independent audit re-ran them cold in a clean copy. Green is green; the contracts they test are my design."}, {"q": "What happens if the Meta API changes?", "a": "The meta-instagram package isolates it; contract tests catch drift at the boundary."}, {"q": "Why hasn't the live path run?", "a": "Deliberately. Mock-by-default until I certify with a burner account. The real account is a business asset."}, {"q": "What breaks first at scale?", "a": "Single-worker throughput; the claiming pattern shards naturally, but I haven't needed it."}, {"q": "What's not tested?", "a": "E2e, and 65 integration tests pending Postgres. I keep that list in the open."}]}, "creator-command": {"sixty": "Creator Command runs my Instagram business autonomously — research, content, posting, measurement — on ten scheduled jobs on my own hardware. The design center is auditability: it writes everything it does, and everything that fails, into its own log. When its YouTube publishing broke on an expired token, I found out from its log, not from a silent gap. It's live today; the log has this morning's entries. What it doesn't have: a formal test suite — its successor project fixed that — and I don't claim it built my audience.", "qa": [{"q": "How do I know it's really running?", "a": "Its audit log had entries from the morning of the independent audit; mtimes and job counts were re-verified. I'll show excerpts live."}, {"q": "Why no unit tests?", "a": "Speed tradeoff for a personal production system; 20+ ops scripts gate it instead. My next system shipped with 289 formal tests — I updated the method."}, {"q": "Did it grow the account?", "a": "Unproven, and I won't claim it. The account predates the system; attribution needs data I don't have yet."}, {"q": "What's broken right now?", "a": "YouTube token refresh (HTTP 400). The system logged it; re-auth is a pending credential decision."}, {"q": "Why local infrastructure?", "a": "The credentials and data are the business. They stay on hardware I control."}]}, "the-abdul": {"sixty": "THE ABDUL is my personal memory system. An ingest pipeline processed 1,927 of my working sessions into a 6.8-gigabyte search index, served by a 152-line Python server with zero dependencies. The interesting part is who queries it: not just me — my autonomous systems consult it as an advisory brain before decisions. It's deliberately minimal, it has real gaps — no tests, no auth, SQL search rather than embeddings — and the next milestone is semantic retrieval. It's the spine everything else I build plugs into.", "qa": [{"q": "Why not a vector database?", "a": "Deliberate. SQLite full-text gets 80% of the value with 0% of the operational surface. Embeddings are the next milestone, not the foundation."}, {"q": "152 lines — is that a flex or a limitation?", "a": "Both, honestly. It proves the pattern; it isn't a product. The value is the corpus and the consumption pattern."}, {"q": "What about privacy?", "a": "It's the most private thing I own — local-only, never demoed with real content, curated queries only."}, {"q": "How do agents actually use it?", "a": "HTTP calls from Creator Command before consequential decisions; plus git-tracked distilled memory (decisions/learnings/playbooks) loaded into agent context."}, {"q": "What breaks it?", "a": "Ingest drift if session formats change; no tests means I find out manually. Known debt, stated openly."}]}, "ella": {"sixty": "E.L.L.A puts a creator's entire business — content, services, podcast, products, community — into one owned platform instead of five rented ones. Next.js and Supabase, thirteen public pages, full admin dashboard. Two things worth knowing: its design system is a committed artifact including docs written for AI agents as users, and its git history was partially lost to a sync corruption, which I disclose and learned from. It's a working prototype, currently offline, no users — and the honest fifth data point in a five-platform, ninety-day run.", "qa": [{"q": "What happened to the history?", "a": "Cloud-sync eviction corrupted .git mid-project. One recovery commit preserves the working tree. I keep the corrupt dir as evidence and moved all repos out of synced folders."}, {"q": "Why four repos?", "a": "Iteration snapshots during recovery and redesign. Consolidation to one canonical repo is on the 30-day plan."}, {"q": "Who uses it?", "a": "Nobody yet — built for a specific person, offline pending redeploy."}, {"q": "What's 'agent-facing documentation'?", "a": "Build docs whose reader is the next AI session: constraints, tokens, patterns, dont's. It measurably reduces drift across AI-assisted iterations."}, {"q": "Why show a damaged project at all?", "a": "Because the audit standard is the portfolio's product. A five-for-five perfect record would be less believable than four wins and one disclosed scar."}]}};
 PROJECTS.forEach(p=>Object.assign(p,CASE_QA[p.id]||{}));
+
+const SIMS={
+ "creator-command":{label:"One day in the life",date:"2026-08-22",src:"REPLAY of real entries — data/audit.jsonl (1,517 lines), redacted",steps:[
+  {node:"brain",t:"07:30 — the system wakes before he does",client:"Every morning the CEO-brain plans the day: it writes a brief listing exactly what the company of agents will attempt.",eng:'{"at":"2026-08-22T10:02:58Z","actor":"runner","eventType":"company_brief","summary":"brief 2026-08-22: 5 assignment(s), 5 newly enqueued, 1 dormant, 0 budget stop(s)"}',src:"audit.jsonl · verbatim, redacted"},
+  {node:"abdul",t:"It consults his memory first",client:"Before acting, the system checks Abdelrahman's accumulated decisions — his indexed history serves as an advisory brain.",eng:"Advisory call to THE ABDUL's HTTP index (6.8GB SQLite over 1,927 sessions) — consulted before consequential choices per AGENT.md",src:"architecture verified in audit; index live same day"},
+  {node:"prod",t:"An agent completes a mission",client:"A research agent finds five trending angles and files its output — with the skills and playbooks it used recorded.",eng:'{"eventType":"mission_completed","resourceRef":"mission:find-five-angles","summary":"produced 3319 chars (angles); skills: kai-growth-hacker; playbook: pb-1..pb-5; memory: [id]"}',src:"audit.jsonl · verbatim, redacted"},
+  {node:"gate",t:"The governor says no — five times",client:"Not everything ships. The digest shows 5 governor refusals that week: drafted content the rules stopped.",eng:'{"eventType":"watch_digest","summary":"1 drafted, 0 approved, 0 published, 5 governor refusals, 0 failures"}',src:"audit.jsonl · verbatim"},
+  {node:"dist",t:"And when something breaks, it says so",client:"The YouTube leg failed on an expired token. Nobody discovered this — the system reported it about itself.",eng:'{"eventType":"publish","resourceRef":"publish:direct:youtube","summary":"FAILED — Google token refresh failed: HTTP 400"}',src:"audit.jsonl · verbatim"},
+  {node:"log",t:"Everything lands in the log",client:"348KB of self-written history. If it is not logged, it did not happen.",eng:"audit.jsonl: 1,517 lines, 2026-07-29 → 2026-08-22 · mtime re-verified the morning of the audit",src:"stat + line count, 2026-08-22"}]},
+ "isg":{label:"Draft → approval → published",date:"2026-08-22",src:"REPLAY — real drafts from the live ABDUL Command dashboard + real tool schema from apps/mcp/src/tools.ts",steps:[
+  {node:"agent",t:"An agent wants to post",client:"An AI agent prepares content for the real 141K-follower account — but it can only ASK.",eng:"MCP client → StreamableHTTP server, bearer-token auth, rate-limited (apps/mcp/src/server.ts, 241 LOC)",src:"source inspected; 289 tests reproduced"},
+  {node:"mcp",t:"The tool itself forbids publishing",client:"The drafting tool's own description: creates content only — nothing is published, nothing is approved.",eng:"name: 'instagram_create_draft' · toolClass: 'prepare' · description: 'Create an immutable draft version… Creates content only; nothing is published and nothing is approved.' · caption: z.string().max(2200)",src:"tools.ts lines 432-444, verbatim"},
+  {node:"draft",t:"A real draft is born",client:"The draft gets an immutable ID and waits.",eng:"drf_w1naq38acq4yu9ogzzbwawtl · state: published 8/22/2026 6:09 PM ET (lifecycle visible in live dashboard)",src:"ABDUL Command overview, captured live 2026-08-22"},
+  {node:"gate",t:"A human decides",client:"The approval queue is the only path forward. On capture day it read: 'Nothing is awaiting approval' — everything had been reviewed.",eng:"UI state: 'Waiting for your decision — Nothing is awaiting approval' · publish tool exists ONLY as instagram_publish_approved",src:"live dashboard capture + tools.ts"},
+  {node:"work",t:"The worker claims the job safely",client:"One worker picks up each approved job exactly once — no double-posting.",eng:"claimDueJob via SELECT … FOR UPDATE SKIP LOCKED; maintenance: stale-approval expiry, insights refresh (apps/worker/src/worker.ts)",src:"source inspected"},
+  {node:"log",t:"Published, with receipts",client:"Five publications that day, every one traceable to its draft.",eng:"pub_59z6cch4hy… ✓published · pub_ddg78b1f49… ✓published (+3 more, live dashboard)",src:"ABDUL Command capture 2026-08-22"}]},
+ "kairo":{label:"A governed loop (from the test suite)",date:"2026-08-22",src:"REPLAY of real behavior encoded in tests/execution-rbac.test.mjs — actual code, honestly framed: proven in tests, not a production run",steps:[
+  {node:"biz",t:"A run begins inside one org",client:"Work in KAIRO belongs to an organization from birth — isolation is not a setting, it is the kernel.",eng:'await k.createRun({ org_id: "A", workflow_key: "wf", title: "A run" })',src:"execution-rbac.test.mjs · verbatim"},
+  {node:"orch",t:"The kernel enforces the boundary",client:"Another org literally cannot see the run exists.",eng:'test("a run created by org A is invisible to org B") → assert.rejects(k.getRun("B", run.id), /not found/)',src:"execution-rbac.test.mjs · verbatim"},
+  {node:"cert",t:"Artifacts are scoped too",client:"Outputs inherit the same wall — org B asking for org A's artifacts gets 'not found', not 'forbidden'. It can't even confirm they exist.",eng:'writeArtifact({org_id:"A", …, title:"secret"}) → listArtifacts("B", run.id) rejects /not found/',src:"execution-rbac.test.mjs · verbatim"},
+  {node:"gate",t:"And approvals are the hardest wall",client:"The test name says it all: org B cannot approve org A's gate. Human approval is org-locked at the kernel.",eng:'test("approvals are org-scoped — org B cannot approve org A’s gate")',src:"execution-rbac.test.mjs · verbatim"},
+  {node:"log",t:"Two independent layers",client:"The kernel proves isolation without a database — and Postgres row-level security enforces it again underneath.",eng:"// Postgres RLS (migration 20260629_execution_kernel.sql) is the second, independent layer; this proves the first without a database.",src:"test file comment · verbatim; 62 migrations counted"},
+  {node:"out",t:"76 files of this",client:"This is one of 76 behavioral test files. The pattern — prove the boundary, then prove it again — is the platform's whole philosophy.",eng:"find tests/ → 76 *.test.mjs incl. boardroom-gate, gdpr-dpa-checklist, buyer-readiness",src:"file count, audit 2026-08-22"}]},
+ "mcp-fleet":{label:"An agent calls the fleet",date:"2026-08-22",src:"REPLAY — real tool schema and server source from the audited fleet; JSON-RPC framing per MCP spec",steps:[
+  {node:"cli",t:"Any agent, one protocol",client:"Claude — or any MCP client — speaks one protocol to every server in the fleet.",eng:'{"jsonrpc":"2.0","id":2,"method":"tools/list"} → server returns its tool inventory with JSON schemas',src:"MCP spec framing; servers audited on disk"},
+  {node:"local",t:"Six Python servers answer locally",client:"On this Mac: revenue-os, b2b-intel, agentic-teams, google-ai, skills-library, macos-automation — 59 tools over stdio.",eng:"~/.claude/*/server.py · 1,735 LOC total · e.g. agentic-teams: executive_team_run, sdr_team_run… (438 LOC, 2026-05-22)",src:"fleet audit 13_MCP_FLEET_AUDIT.md",},
+  {node:"mini",t:"The Mini answers over SSH",client:"An always-on second machine runs shell and automation servers, driven remotely.",eng:"ssh 192.168.1.200 node ~/.claude/mcp-shell.mjs · UNVERIFIED at audit (host asleep) — claimed only as registered, not as read",src:"registry entry; honesty grade UNVERIFIED"},
+  {node:"gateway",t:"The products ARE servers too",client:"ISG's 18-tool approval gateway and KAIRO's own MCP surface — the platforms expose themselves to agents.",eng:"apps/mcp: 937 LOC TS, publish exists only as instagram_publish_approved · kairo src/app/api/mcp/*: 1,427 LOC HTTP",src:"source inspected; 289 tests reproduced (ISG)"},
+  {node:"orig",t:"Where KAIRO was born",client:"agentic-teams — departments as tools — was the seed of KAIRO. Same week: server modified May 22, platform's first commit May 21.",eng:"agentic-teams/server.py mtime 2026-05-22 · kairo-intelligence first commit 2026-05-21 (git log)",src:"owner-confirmed + date-corroborated, 13_MCP_FLEET_AUDIT.md"}]}
+};
+
+
+PROJECTS.push({
+ id:"mcp-fleet", name:"The MCP Fleet", accent:"#3E6B45", size:"m",
+ short:"The plumbing behind the five platforms: eight self-built MCP servers — ~4,100 lines, 77 tools — spanning local Python, an approval-gated TypeScript gateway, and a product that exposes its own MCP surface.",
+ problem:"One operator, many systems, two machines. Without a common protocol every tool is a one-off integration; with MCP, everything he builds becomes callable by every agent he runs.",
+ user:"His own agents — Claude sessions, schedulers, and the platforms themselves.",
+ maturity:{cls:"b-verified",label:"Verified — 8 built servers",grade:"verified"},
+ diff:"KAIRO wasn't preceded by the fleet — it was born inside it: agentic-teams (departments as tools, May 22) is the confirmed seed of the company-OS idea (first commit May 21).",
+ role:"Authored the eight BUILT servers; composed 15 third-party servers into the fleet; designed the three-machine topology. Honest split maintained: BUILT / ASSEMBLED / WRAPPED.",
+ ai:"Implementation under direction, like everything here. The architecture — what deserves to be a tool, where approval lives, what runs on which machine — is the authored layer.",
+ verified:[
+  "8 BUILT servers verified on disk: 6 local Python (1,735 LOC, 59 tools) + ISG gateway (937 LOC TS, 18 tools) + KAIRO MCP surface (1,427 LOC TS)",
+  "77 tools across BUILT servers — names extracted from source",
+  "Origin story date-corroborated: agentic-teams 2026-05-22 · KAIRO first commit 2026-05-21",
+  "Fleet spans stdio, StreamableHTTP, and Next.js HTTP transports",
+  "15 ASSEMBLED third-party servers + 10 thin configs, graded honestly"],
+ limitations:[
+  "mini-shell / mini-applescript UNVERIFIED — the Mini refused SSH at audit; likely built, not claimed until read",
+  "lauren-* servers deliberately unaudited (another person's machine)",
+  "PAL is a fork of an Apache-2.0 upstream — ASSEMBLED, not authored",
+  "THE ABDUL's server is plain HTTP, not MCP — never counted here",
+  "The 33 MCP repos on ORICO are a study library, not authorship"],
+ tech:["MCP","Python (FastMCP)","TypeScript","stdio","StreamableHTTP","SSH remoting","Zod schemas"],
+ video:null,
+ next:{milestone:"Wake the Mini and verify its two servers; register the ISG gateway in the fleet config",blockers:["Mini SSH access"],accept:"mini-shell + mini-applescript graded BUILT with LOC and tool counts, or honestly regraded."},
+ decisions:[
+  "agentic-teams before KAIRO: 'departments as tools' at 438 lines proved the thesis that became a 4,256-file platform — prototype-as-MCP is the method.",
+  "Build vs adopt, per server: authored where the logic is his (revenue scoring, team orchestration); adopted where commodity (github, playwright); the grade labels keep the two honest.",
+  "Cost-awareness as a tool: the google-ai router ships estimate_cost as a first-class tool — spend is part of the interface, not an afterthought.",
+  "Two machines on purpose: heavy interactive work here, always-on automation on the Mini — the fleet is what makes the split invisible.",
+  "The products expose MCP surfaces themselves (ISG, KAIRO) — the fleet pattern graduated from tooling into product architecture."],
+ wf:{nodes:[
+  {id:"cli",l:"Agents / Claude",layer:0,kind:"input",st:"verified",d:"Any MCP client — Claude sessions, schedulers, other systems."},
+  {id:"local",l:"6 Python servers",layer:1,kind:"orch",st:"verified",d:"revenue-os, b2b-intel, agentic-teams, google-ai, skills-library, macos-automation — 1,735 LOC, 59 tools, stdio."},
+  {id:"orig",l:"agentic-teams",layer:2,kind:"agent",st:"verified",d:"Departments as tools — the confirmed seed of KAIRO (dates corroborate: May 22 vs first commit May 21)."},
+  {id:"mini",l:"The Mini (SSH)",layer:2,kind:"action",st:"arch",d:"Always-on second machine: mcp-shell.mjs + mcp-applescript.mjs — UNVERIFIED until the host wakes."},
+  {id:"gateway",l:"ISG gateway",layer:3,kind:"policy",st:"verified",d:"937-LOC approval-gated server; publish exists only as publish_approved; 289 tests."},
+  {id:"kmcp",l:"KAIRO MCP surface",layer:3,kind:"agent",st:"verified",d:"1,427 LOC of HTTP MCP routes — the platform exposes itself to agents."},
+  {id:"asm",l:"15 assembled servers",layer:1,kind:"memory",st:"partial",d:"Third-party servers composed in: PAL fork, social APIs, memory, browsers — labeled ASSEMBLED, never claimed as authored."},
+  {id:"ev",l:"Fleet audit",layer:4,kind:"evid",st:"verified",d:"Every server graded BUILT / ASSEMBLED / WRAPPED / UNVERIFIED on disk — 13_MCP_FLEET_AUDIT.md."},
+  {id:"out",l:"Five platforms",layer:5,kind:"output",st:"verified",d:"The flagships consume the fleet — and two of them became servers themselves."}],
+  edges:[["cli","local"],["cli","asm"],["local","orig"],["orig","out"],["gateway","out"],["kmcp","out"],["local","ev"],["gateway","ev"],["cli","gateway"],["cli","kmcp"]],
+  planned:[["cli","mini"],["mini","ev"]]},
+ evidence:[
+  {claim:"8 self-built MCP servers, 77 tools",type:"file-audit",src:"Fleet audit 2026-08-22: ~/.claude/{agentic-teams,revenue-os,b2b-intel,google-ai-mcp,skills-library-mcp,macos-mcp}/server.py (LOC counted, tool names extracted) + ISG apps/mcp (937 LOC) + kairo src/app/api/mcp (1,427 LOC)",result:"VERIFIED",proves:"Authorship and scale of the fleet",not:"Does not include the 2 unverified Mini servers or any assembled third-party server"},
+  {claim:"agentic-teams was the seed of KAIRO",type:"owner+dates",src:"Owner statement 2026-08-22, corroborated: server.py mtime 2026-05-22; kairo first commit 2026-05-21",result:"VERIFIED (attested + corroborated)",proves:"One continuous design thread from tool to platform",not:"Intent is attested; the dates are the hard evidence"},
+  {claim:"Honest grading of the whole fleet",type:"method",src:"BUILT 8 / ASSEMBLED 15 / WRAPPED 10 / UNVERIFIED 4 — incl. downgrades: PAL is a fork; THE ABDUL server is not MCP; ORICO's 33 repos are a study library",result:"VERIFIED",proves:"The claim system itself",not:"—"}],
+ skills:{"AI product strategy":"de","Workflow architecture":"vs","Agent orchestration":"vs","Prompt & context design":"de","Governed automation":"vs","Human-in-the-loop systems":"de","Product requirements":"em","Evaluation & QA":"de","Rapid AI prototyping":"vs","UX direction":"na","Technical documentation":"de","Business-model thinking":"em","Integration planning":"vs","Testing & debugging":"em","Production operations":"em","ML engineering":"ne","Hand-coded engineering":"ne"}
+});
+
+
 const LOG_LINES=["{\"at\":\"2026-08-17T01:47:09.281Z\",\"actor\":\"system\",\"eventType\":\"watch_digest\",\"resourceRef\":\"watch:digest\",\"summary\":\"1 drafted, 0 approved, 0 published, 5 governor refusals, 0 failures\"}", "{\"at\":\"2026-08-17T01:47:23.571Z\",\"actor\":\"system\",\"eventType\":\"watch_sweep\",\"resourceRef\":\"watch:sweep\",\"summary\":\"37 pending (37 legacy), 0 stale, 2 dupe titles\"}", "{\"at\":\"2026-08-17T01:47:23.703Z\",\"actor\":\"system\",\"eventType\":\"watch_ledger\",\"resourceRef\":\"watch:ledger\",\"summary\":\"clean — 0 attempts/24h, 0 double posts, 0 dead-lettered\"}", "{\"at\":\"2026-08-17T01:47:23.828Z\",\"actor\":\"system\",\"eventType\":\"watch_weekly\",\"resourceRef\":\"watch:weekly\",\"summary\":\"4 posts this week; 5 refusals\"}", "{\"at\":\"2026-08-17T14:14:56.551Z\",\"actor\":\"owner\",\"eventType\":\"publish\",\"resourceRef\":\"publish:direct:youtube\",\"summary\":\"direct publish to youtube FAILED — Google token refresh failed: HTTP 400\"}", "{\"at\":\"2026-08-17T14:20:00.314Z\",\"actor\":\"owner\",\"eventType\":\"publish\",\"resourceRef\":\"publish:direct:youtube\",\"summary\":\"direct publish to youtube FAILED — Google token refresh failed: HTTP 400\"}", "{\"at\":\"2026-08-21T10:31:32.279Z\",\"actor\":\"runner\",\"eventType\":\"mission_completed\",\"resourceRef\":\"mission:find-five-angles\",\"summary\":\"Find 5 trending angles in my niche produced 3319 chars (angles); skills: kai-growth-hacker; playbook: pb-1, pb-2, pb-3, pb-4, pb-5; memory: [id]\"}", "{\"at\":\"2026-08-22T10:02:58.504Z\",\"actor\":\"runner\",\"eventType\":\"company_brief\",\"resourceRef\":\"company:ceo:co.plan_day\",\"summary\":\"brief 2026-08-22: 5 assignment(s), 5 newly enqueued, 1 dormant, 0 budget stop(s)\"}", "{\"at\":\"2026-08-22T10:03:02.181Z\",\"actor\":\"runner\",\"eventType\":\"company_mission_ok\",\"resourceRef\":\"company:analyst:co.distill_playbook\",\"summary\":\"Distill outcomes into playbook rules → ok · cost 0 tok / 0 cr (measured) · skills: none · playbook: none\"}", "{\"at\":\"2026-08-22T10:30:49.281Z\",\"actor\":\"owner\",\"eventType\":\"mission_started\",\"resourceRef\":\"mission:find-five-angles\",\"summary\":\"Find 5 trending angles in my niche started via owner; skills: kai-growth-hacker\"}", "{\"at\":\"2026-08-22T10:30:54.048Z\",\"actor\":\"runner\",\"eventType\":\"mission_failed\",\"resourceRef\":\"mission:find-five-angles\",\"summary\":\"Find 5 trending angles in my niche failed — You're out of extra usage · resets 8am (America/New_York)\"}", "{\"at\":\"2026-08-22T11:01:01.400Z\",\"actor\":\"runner\",\"eventType\":\"company_mission_failed\",\"resourceRef\":\"company:cmo:co.script_three\",\"summary\":\"Fill the approval queue with the day's pieces → failed · error: trends stage: You're out of extra usage · resets 8am (America/New_York) · cost 60000 tok / 36 cr (ESTIMATE) · skills: competitor-research, competitor-research-brief · playbook: none\"}"];
 const fmtLog=l=>{const bad=/FAILED|failed/.test(l);return `<span class="${bad?'fail':'okl'}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`};
 const TIMELINE=[
@@ -962,7 +1061,7 @@ function miniCard(p){const hasVid=!!p.video;return `
 
 /* ---------- WORK ---------- */
 let workView="portfolio", workFilter="all", workSort="strength";
-const STRENGTH={kairo:82,"isg":81,"creator-command":78,"the-abdul":68,"ella":61};
+const STRENGTH={kairo:82,"isg":81,"creator-command":78,"mcp-fleet":74,"the-abdul":68,"ella":61};
 routes["/work"]=()=>{
   let list=PROJECTS.filter(p=>{
     if(workFilter==="all")return true;
@@ -1063,6 +1162,14 @@ routes["/project"]=(id)=>{
       <h3>${esc(p.name)} — system topology <span class="src">(dashed = planned; click a node to inspect)</span></h3>
       <div id="pFlow">${renderFlow(p.wf.nodes,p.wf.edges,p.wf.planned,{label:p.name+" system topology"})}</div>
       ${LEGEND}<div class="insp" id="pInsp" aria-live="polite"></div>
+      ${SIMS[p.id]?`
+      <div class="simbar">
+        <button class="simbtn" id="simPlay">▶ Replay a real run</button>
+        <button class="simbtn ghost" id="simPrev" hidden>‹ Back</button>
+        <button class="simbtn ghost" id="simNext" hidden>Next ›</button>
+        <span class="replay-tag">REPLAY · ${SIMS[p.id].date} · real data, redacted</span>
+      </div>
+      <div class="simcard" id="simCard" aria-live="polite"></div>`:""}
     </div>
     <p class="src" style="margin-top:10px">Architecture visualization — implementation status shown per node and in Evidence Mode. Not live telemetry.</p>`;
   if(tab==="proof")body=`
@@ -1468,7 +1575,40 @@ function wirePage(r,arg){
     syncTray()}));
   // project tabs + flow
   $$("[data-pt]").forEach(b=>b.addEventListener("click",()=>{projTab[b.dataset.pid]=b.dataset.pt;render()}));
-  const pf=$("#pFlow");if(pf&&r==="/project"){const p=P(arg);wireFlow(pf,p.wf.nodes,$("#pInsp"),n=>`<div class="row"><b>Human approval required</b> — ${n.kind==="gate"?"Yes — this IS the gate":n.kind==="action"?"Upstream gate applies":"No (pre-gate stage)"}</div>`)}
+  const pf=$("#pFlow");if(pf&&r==="/project"){const p=P(arg);wireFlow(pf,p.wf.nodes,$("#pInsp"),n=>`<div class="row"><b>Human approval required</b> — ${n.kind==="gate"?"Yes — this IS the gate":n.kind==="action"?"Upstream gate applies":"No (pre-gate stage)"}</div>`);
+    // ===== step-through simulation engine (replays of real runs) =====
+    const sim=SIMS[p.id];
+    if(sim){
+      let i=-1,timer=null;
+      const play=$("#simPlay"),prev=$("#simPrev"),next=$("#simNext"),card=$("#simCard");
+      const mode=()=>localStorage.getItem("vmode")||"";
+      const show=idx=>{
+        i=Math.max(0,Math.min(idx,sim.steps.length-1));
+        const st=sim.steps[i];
+        pf.querySelectorAll(".nd").forEach(n=>n.classList.toggle("simhot",n.dataset.nid===st.node));
+        pf.querySelectorAll(".ed,.pulse").forEach(e=>e.classList.toggle("hot",e.dataset.a===st.node||e.dataset.b===st.node));
+        const engineer=mode()==="engineer"||mode()==="";
+        card.classList.add("open");
+        card.innerHTML=`<span class="st">Step ${i+1} / ${sim.steps.length} — ${esc(sim.label)}</span>
+          <h4>${esc(st.t)}</h4>
+          <p class="client">${esc(st.client)}</p>
+          ${mode()!=="client"?`<div class="eng">${esc(st.eng)}</div>`:""}
+          ${document.body.classList.contains("ev")||mode()!=="client"?`<span class="src2">source: ${esc(st.src)} · ${esc(sim.src)}</span>`:""}
+          <div class="simdots">${sim.steps.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</div>`;
+        prev.hidden=false;next.hidden=false;
+        next.textContent=i>=sim.steps.length-1?"Replay ↺":"Next ›";
+      };
+      const stopAuto=()=>{if(timer){clearInterval(timer);timer=null;play.textContent="▶ Replay a real run"}};
+      play.addEventListener("click",()=>{
+        if(timer){stopAuto();return}
+        show(i>=sim.steps.length-1?0:i+1);
+        if(!reduced){play.textContent="❚❚ Pause";
+          timer=setInterval(()=>{if(i>=sim.steps.length-1){stopAuto()}else show(i+1)},3000);}
+      });
+      prev.addEventListener("click",()=>{stopAuto();show(i-1)});
+      next.addEventListener("click",()=>{stopAuto();show(i>=sim.steps.length-1?0:i+1)});
+    }
+  }
   // atlas
   const atP=$("#atP");if(atP)atP.addEventListener("change",()=>{atlasProj=atP.value;render()});
   const atS=$("#atS");if(atS)atS.addEventListener("change",()=>{atlasSt=atS.value;render()});
@@ -1625,6 +1765,8 @@ const CMDS=[
  {n:"Is anything running live?",q:"live production running",k:"ask",f:()=>location.hash="#/project/creator-command"},
  {n:"Show me the audit log",q:"audit log proof",k:"ask",f:()=>{projTab["creator-command"]="proof";location.hash="#/project/creator-command";render()}},
  {n:"Can I hire you?",q:"hire price cost consulting",k:"ask",f:()=>location.hash="#/hire"},
+ {n:"Open case study: The MCP Fleet",q:"mcp fleet servers plumbing",k:"project",f:()=>location.hash="#/project/mcp-fleet"},
+ {n:"Replay a real run (simulations)",q:"simulation replay demo run",k:"ask",f:()=>{projTab["creator-command"]="system";location.hash="#/project/creator-command";render()}},
  {n:"What do you NOT claim?",q:"not claimed honest",k:"ask",f:()=>location.hash="#/skills"},
  {n:"How was all this verified?",q:"verified method audit",k:"ask",f:()=>location.hash="#/about"},
  {n:"Toggle Evidence Mode",k:"mode",f:()=>setEv(!document.body.classList.contains("ev"))},
